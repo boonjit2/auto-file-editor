@@ -1,0 +1,27 @@
+{
+  "name": "auto-file-editor",
+  "version": "1.0.0",
+  "description": "Edit file automatically",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "require": "^2.4.20",
+    "json-stringify-safe": "^5.0.1"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boonjit2/auto-file-editor.git"
+  },
+  "author": "boonjit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boonjit2/auto-file-editor/issues"
+  },
+  "homepage": "https://github.com/boonjit2/auto-file-editor#readme"
+}
