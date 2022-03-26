@@ -1,18 +1,20 @@
-let config =
+module.exports =
 {
     "jobSummaryFile": "summary.JSON",
-        "jobs" : [
+    "job":{
+        "available" : [
             {
-                "id": "1",
-                "name": "List target folder structure",
+                "controller": "listTargetFolderStructure",
                 "description": "List target folder structure from targetPath, then store it in outputFile",
                 "targetPath": "",
                 "outputFile": ""
             }
+        ],
+        "selected" :[
+            {
+                "controller": "listTargetFolderStructure"
+            }
         ]
+    }
 
-}
-
-module.exports = {
-    config
 }
