@@ -1,7 +1,7 @@
 module.exports =
-{
-    "jobSummaryFile": "summary.JSON",
+{ 
     "job":{
+        "logFile": "D:/auto-file-editor/logs/log.txt",
         "available" : [
             {
                 "controller": "listTargetFolderStructure",
