@@ -70,7 +70,9 @@ module.exports.getDirectoryAndFileListRecursive = function (folderPath, depthLim
 
 }
 
-
+module.exports.readFile = function (FilePath) {
+    return fs.readFileSync(FilePath, { encoding: 'utf8' });
+}
 
 // fs.readdirSync(folderPath).map(fileName => {
 //     return path.join(folderPath, fileName)
