@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 var path = require('path');
-
+const log = require('./log');
 
 function _isFile(fileName) {
     return fs.lstatSync(fileName).isFile()
@@ -74,6 +74,35 @@ module.exports.readFile = function (FilePath) {
     return fs.readFileSync(FilePath, { encoding: 'utf8' });
 }
 
+module.exports.copy = function (src, dest) {
+    log.out(`copy from ${src} to ${dest}`);
+    return fs.copySync(src, dest, { overwrite: true });
+}
+
+module.exports.mkDir = function (targetPath) {
+    return fs.mkdirSync(targetPath);
+}
+
 // fs.readdirSync(folderPath).map(fileName => {
 //     return path.join(folderPath, fileName)
 // })
+
+module.exports.isPathEmpty = function (targetPath) {
+    // path exists
+    if (fs.existsSync(targetPath)) {
+        return fs.readdirSync(targetPath).length === 0;
+    } else {
+        // path not exists, so path is empty
+        return true;
+    }
+}
+
+module.exports.isPathExist = function (targetPath) {
+    // path exists
+    if (fs.existsSync(targetPath)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
