@@ -3,6 +3,18 @@ const log = require('./log');
 const stringify = require('json-stringify-safe');
 const path = require('path');
 
+function _extractJavaClassHeader(javaSourceFile) {
+    let JavaClassHeader = "";
+
+    // get file content
+    let fileContent = file.readFile(javaSourceFile);
+    let pattern = /^[ ]?xxx.*;$/gm;
+    let matches = pattern.exec(fileContent);
+
+    JavaClassHeader = matches[0];
+    return JavaClassHeader;
+}
+
 module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath, projectNameUppercase) {
 
     // error if targetPath not empty
@@ -47,25 +59,47 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
         , /{{projectNameUppercase}}/gm,
         projectNameUppercase);
 
+    // parse switchyard info
+    let switchyardRaw = file.readFile(switchyardProjectInfoFile);
+    let switchyardInfo = JSON.parse(switchyardRaw);
 
-    // // parse switchyard info
-    // let switchyardRaw = file.readFile(switchyardProjectInfoFile);
-    // let switchyardInfo = JSON.parse(switchyardRaw);
+    // create destination path
+    let pathPrefix = path.join(targetPath, '/src/main/java/');
 
-    // // create destination path
-    // let pathPrefix = path.join(targetPath, '/src/main/java/');
+    // iterate switchyardInfo file list
+    for (let member of switchyardInfo) {
+        // handle java files
+        if (member.isJavaSource) {
+            let sourcePath = member.fullPath;
+            let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
+            file.copy(sourcePath, destinationPath);
 
-    // // copy 
-    // for (let member of switchyardInfo) {
-    //     if (member.isJavaSource) {
-    //         let sourcePath = member.fullPath;
-    //         let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
-    //         file.copy(sourcePath, destinationPath);
+            // check if this file has loggers
+            if (file.containPattern(destinationPath, /import[ ]*org.apache.log4j.Logger;/gm)) {
+                // apply new log import
+                file.replaceInfile(
+                    destinationPath
+                    , /import[ ]*org.apache.log4j.Logger;/gm,
+                    'import lombok.extern.slf4j.Slf4j;');
 
-    //         // create destination folder if not exist
+                // replace old LOGGER. with log.
+                file.replaceInfile(
+                    destinationPath
+                    , /LOGGER\./gm,
+                    'log.');
 
-    //     }
-    // }
+                // TODO: apply annotation before the header of the class
+            }
+
+        }
+
+        // handle pom files
+        if (member.fileName === 'pom.xml') {
+
+        }
+
+
+    }
 
 
     return `controllers\createSpringBootProject.js: created project at: ${targetPath}`;

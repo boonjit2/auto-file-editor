@@ -115,3 +115,15 @@ module.exports.replaceInfile = function (files, from, to) {
     let options = { files, from, to };
     return replace.sync(options);
 }
+
+module.exports.containPattern = function (filePath, pattern) {
+    // get file content
+    let fileContent = this.readFile(filePath);
+    let matches = pattern.exec(fileContent);
+
+    if (matches && matches.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
