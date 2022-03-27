@@ -1,4 +1,4 @@
-package th.co.ais.mynetwork.{{project_name}}.controller;
+package th.co.ais.mynetwork.{{projectNameLowercase}}.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,15 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 //@RequestMapping(path="/")
 @Slf4j
-public class {{ProjectName}}Controller {
+public class {{projectNameUppercase}}Controller {
 	
 //	@Value("${mynewtork.test}")
 //	public String testValue;
 	
 	@Autowired
-	public {{ProjectName}}ManagementBean bean;
+	public {{projectNameUppercase}}ManagementBean bean;
 	
-//	private static final Logger LOGGER = Logger.getLogger({{ProjectName}}Controller.class);
+//	private static final Logger LOGGER = Logger.getLogger({{projectNameUppercase}}Controller.class);
 
     @PostMapping(path = "/{{MethodPath}}", produces = "application/json")
     public {{ResponseClassName}} {{ControllerMethodName}}(@RequestBody {{RequestClassName}} request){

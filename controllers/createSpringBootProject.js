@@ -28,12 +28,12 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
 
     // replace patterns in files
     file.replaceInfile(
-        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/controller', projectNameLowercase, '/*.java')
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork', projectNameLowercase, '/controller/*.java')
         , /{{projectNameLowercase}}/gm,
         projectNameLowercase);
 
     file.replaceInfile(
-        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/controller', projectNameLowercase, '/*.java')
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork', projectNameLowercase, '/controller/*.java')
         , /{{projectNameUppercase}}/gm,
         projectNameUppercase);
 
