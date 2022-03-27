@@ -17,7 +17,8 @@ for (let selected of config.job.selected) {
     } else if (selected.controller === "createSpringBootProject") {
         result += createSpringBootProject(selected.switchyardProjectInfoFile,
             selected.springBootTemplateFolder,
-            selected.targetPath);
+            selected.targetPath,
+            selected.projectNameUppercase);
     }
 
     log.write(config.job.logFile, result);

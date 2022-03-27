@@ -11,7 +11,8 @@
     "json-stringify-safe": "^5.0.1",
     "fs": "^0.0.1-security",
     "fs-extra": "^10.0.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "replace-in-file": "^6.3.2"
   },
   "engines": {
     "node": ">= 6.0.0",

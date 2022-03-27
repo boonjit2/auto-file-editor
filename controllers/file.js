@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 var path = require('path');
 const log = require('./log');
+const replace = require('replace-in-file');
 
 function _isFile(fileName) {
     return fs.lstatSync(fileName).isFile()
@@ -75,7 +76,7 @@ module.exports.readFile = function (FilePath) {
 }
 
 module.exports.copy = function (src, dest) {
-    log.out(`copy from ${src} to ${dest}`);
+    // log.out(`copy from ${src} to ${dest}`);
     return fs.copySync(src, dest, { overwrite: true });
 }
 
@@ -106,3 +107,11 @@ module.exports.isPathExist = function (targetPath) {
     }
 }
 
+module.exports.rename = function (oldPath, newPath) {
+    return fs.renameSync(oldPath, newPath);
+}
+
+module.exports.replaceInfile = function (files, from, to) {
+    let options = { files, from, to };
+    return replace.sync(options);
+}

@@ -3,7 +3,7 @@ const log = require('./log');
 const stringify = require('json-stringify-safe');
 const path = require('path');
 
-module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath) {
+module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath, projectNameUppercase) {
 
     // error if targetPath not empty
     if (file.isPathEmpty(targetPath) === false) {
@@ -18,24 +18,54 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
     // copy template to target location
     file.copy(springBootTemplateFolder, targetPath)
 
-    // parse switchyard info
-    let switchyardRaw = file.readFile(switchyardProjectInfoFile);
-    let switchyardInfo = JSON.parse(switchyardRaw);
+    // rename new project files
+    let projectNameLowercase = projectNameUppercase.toLowerCase();
+    file.rename(path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/project_name'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase));
+    file.rename(path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/controller/ProjectNameController.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/controller/', (projectNameUppercase + 'Controller.java')));
 
-    // create destination path
-    let pathPrefix = path.join(targetPath, '/src/main/java/');
+    file.rename(path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/ProjectNameApplication.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/', (projectNameUppercase + 'Application.java')));
 
-    // copy 
-    for (let member of switchyardInfo) {
-        if (member.isJavaSource) {
-            let sourcePath = member.fullPath;
-            let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
-            file.copy(sourcePath, destinationPath);
 
-            // create destination folder if not exist
+    // replace patterns in files
+    file.replaceInfile(
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/controller', projectNameLowercase, '/*.java')
+        , /{{projectNameLowercase}}/gm,
+        projectNameLowercase);
 
-        }
-    }
+    file.replaceInfile(
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/controller', projectNameLowercase, '/*.java')
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+    file.replaceInfile(
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/*.java')
+        , /{{projectNameLowercase}}/gm,
+        projectNameLowercase);
+
+    file.replaceInfile(
+        path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/*.java')
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+
+    // // parse switchyard info
+    // let switchyardRaw = file.readFile(switchyardProjectInfoFile);
+    // let switchyardInfo = JSON.parse(switchyardRaw);
+
+    // // create destination path
+    // let pathPrefix = path.join(targetPath, '/src/main/java/');
+
+    // // copy 
+    // for (let member of switchyardInfo) {
+    //     if (member.isJavaSource) {
+    //         let sourcePath = member.fullPath;
+    //         let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
+    //         file.copy(sourcePath, destinationPath);
+
+    //         // create destination folder if not exist
+
+    //     }
+    // }
 
 
     return `controllers\createSpringBootProject.js: created project at: ${targetPath}`;

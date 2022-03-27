@@ -15,6 +15,7 @@ module.exports =
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
                 "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
                 "targetPath": "D:/auto-file-editor/logs/centralizedb",
+                "projectNameUppercase": "CentralizeDB"
             },
         ],
         "selected": [
@@ -29,6 +30,7 @@ module.exports =
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
                 "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
                 "targetPath": "D:/auto-file-editor/logs/centralizedb",
+                "projectNameUppercase": "CentralizeDB"
             }
         ]
     }
