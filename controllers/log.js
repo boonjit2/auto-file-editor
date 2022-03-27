@@ -10,3 +10,7 @@ module.exports.write = function(logFile,data){
         console.log(`log.write: Done: Wrote to file: ${logFile}`);
     });
 }
+
+module.exports.out = function(data){
+    console.log(data);
+}
