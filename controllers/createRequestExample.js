@@ -1,7 +1,9 @@
 const file = require('./file');
 const log = require('./log');
+
 const stringify = require('json-stringify-safe');
 const path = require('path');
+const string = require('./string');
 
 module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, outputFile) {
 
@@ -48,7 +50,29 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
             // look into the .java file
             let javaFileContent = file.readFile(find1.fullPath);
             let privateVariables = javaFileContent.match(/((private|String|int)( )+)?(String|int|List.*)( )+([a-zA-Z_]+);/gm);
-            requestInfo.privateVariables = privateVariables;
+            // requestInfo.privateVariables = privateVariables;
+            requestInfo.privateVariables = [];
+
+            // convert each privateVariables to request key-value
+            requestInfo.requestExample = {};
+            for (let privateVariable of privateVariables) {
+                let tokens = string.tokenize(privateVariable, /[\(\) ;]+/gm);
+                // requestInfo.privateVariables.push(tokens);
+
+                // variables
+                let type = tokens[tokens.length - 2];
+                let name = tokens[tokens.length - 1];
+
+                requestInfo.privateVariables.push({ type, name });
+
+                // if (type === 'String') {
+                //     requestInfo.privateVariables[name] = '';
+                // } else {
+                //     requestInfo.privateVariables[name] = 'unknown';
+                // }
+            }
+
+
         }
     }
 
