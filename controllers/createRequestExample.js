@@ -30,6 +30,27 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
         };
     });
 
+    // iterate requestInfoList
+    for (let requestInfo of requestInfoList) {
+        // parse
+        let switchyardProjectInfo = file.readFileToJson(switchyardProjectInfoFile);
+
+        // get the full path to .java file 
+        let find1 = switchyardProjectInfo.find(member => {
+            if (member.fileName === `${requestInfo.requestClassName}.java`) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        if (find1) {
+            // look into the .java file
+            let javaFileContent = file.readFile(find1.fullPath);
+            let privateVariables = javaFileContent.match(/((private|String|int)( )+)?(String|int|List.*)( )+([a-zA-Z_]+);/gm);
+            requestInfo.privateVariables = privateVariables;
+        }
+    }
 
 
     results = requestInfoList;

@@ -75,6 +75,11 @@ module.exports.readFile = function (FilePath) {
     return fs.readFileSync(FilePath, { encoding: 'utf8' });
 }
 
+module.exports.readFileToJson = function (FilePath) {
+    let raw = fs.readFileSync(FilePath, { encoding: 'utf8' });
+    return JSON.parse(raw);
+}
+
 module.exports.copy = function (src, dest) {
     // log.out(`copy from ${src} to ${dest}`);
     return fs.copySync(src, dest, { overwrite: true });
