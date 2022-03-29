@@ -38,7 +38,7 @@ function _getPrivateVariableList(javaFileInfo) {
     let javaFileContent = file.readFile(javaFileInfo.fullPath);
 
     // try to capture all private variables to the list = ["private xx yy", "private aa bb" ...]
-    let privateVariables = javaFileContent.match(/((private|String|int|byte|short|long, float|double|boolean|List.*)( )+)?(private|String|int|byte|short|long, float|double|boolean|List.*)( )+([a-zA-Z_]+);/gm);
+    let privateVariables = javaFileContent.match(/((private|String|int|byte|short|long|float|double|boolean|List.*)( )+)?(private|String|int|byte|short|long|float|double|boolean|List.*)( )+([a-zA-Z_]+);/gm);
     let variables = [];
 
     for (let privateVariable of privateVariables) {
@@ -59,10 +59,13 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
 
     let resolved = `${type}`;
 
+    // int|byte|short|long|float|double|boolean
     if (depthLimit <= 0) {
         return resolved;
-    } else if (type.toLowerCase().match(/(int|integer)/gm)) {
+    } else if (type.toLowerCase().match(/(int|byte|short|long|double)/gm)) {
         return 0;
+    } else if (type.toLowerCase().match(/(boolean)/gm)) {
+        return false;
     } else if (type.toLowerCase() === 'string') {
         return "";
     } else if (type.toLowerCase().match(/list<.*>/gm)) {

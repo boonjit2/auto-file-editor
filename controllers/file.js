@@ -136,7 +136,7 @@ module.exports.containPattern = function (filePath, pattern) {
 module.exports.getAllMatches = function (filePath, pattern) {
     // get file content
     let fileContent = this.readFile(filePath);
-    log.out(`fileContent=${fileContent}`);
+    // log.out(`fileContent=${fileContent}`);
     let matches = fileContent.match(pattern);
 
     return matches;
