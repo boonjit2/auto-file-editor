@@ -102,5 +102,5 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
     }
 
 
-    return `controllers\createSpringBootProject.js: created project at: ${targetPath}`;
+    return `controllers.createSpringBootProject.js: created project at: ${targetPath}`;
 }

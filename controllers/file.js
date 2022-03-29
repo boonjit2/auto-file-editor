@@ -127,3 +127,12 @@ module.exports.containPattern = function (filePath, pattern) {
         return false;
     }
 }
+
+module.exports.getAllMatches = function (filePath, pattern) {
+    // get file content
+    let fileContent = this.readFile(filePath);
+    log.out(`fileContent=${fileContent}`);
+    let matches = fileContent.match(pattern);
+
+    return matches;
+}

@@ -45,5 +45,5 @@ module.exports = function (targetPath, outputFile) {
     // write results to project info file
     file.write(outputFile, `${stringify(results, null, 2)}`);
 
-    return "controllers\inspectTargetSwitchyardProject.js executed ok";
+    return "controllers.inspectTargetSwitchyardProject.js executed ok";
 }
