@@ -30,7 +30,7 @@ module.exports =
             //     "controller": "inspectTargetSwitchyardProject",
             //     "targetPath": "D:/myNetworkAppSwitchYard/centralizedb",
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON"
-            // },
+            // }
             // {
             //     "controller": "createSpringBootProject",
             //     "description": "create Spring Boot project folder from template and switchyardProjectInfo to targetPath",
