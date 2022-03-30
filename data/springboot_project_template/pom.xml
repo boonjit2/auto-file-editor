@@ -8,11 +8,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>th.co.ais.mynetwork.planning</groupId>
-	<artifactId>{{project_name}}</artifactId>
+	<artifactId>{{projectNameLowercase}}</artifactId>
 	<version>{{project_version}}</version>
 	<packaging>war</packaging>
-	<name>{{project_name}}</name>
-	<description>{{project_name}} project for Spring Boot</description>
+	<name>{{projectNameLowercase}}</name>
+	<description>{{projectNameLowercase}} project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<!-- 		<spring-cloud.version>2021.0.1</spring-cloud.version> -->
