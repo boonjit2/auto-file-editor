@@ -4,6 +4,83 @@ const stringify = require('json-stringify-safe');
 const path = require('path');
 const string = require('./string');
 
+
+// from:
+//
+// [
+// "\t",
+// "\t@POST",
+// "\t@Path(\"searchAutoBurstSpeedHistory\")",
+// "\t@Produces({\"application/json\"})",
+// "\tpublic CommonResponse searchAutoBurstSpeedHistory(ReqOrderHistoryModel request);",
+// "\t",
+// "\t@POST",
+// "\t@Path(\"getDefaultDropDown\")",
+// "\t@Produces({\"application/json\"})",
+// "\tpublic CommonResponse getDefaultDropDown();",
+// "}"
+// ]
+//
+// to:
+// [
+//  {
+//     httpMethod: "POST",
+//     path: "getDefaultDropDown",
+//     methodHeader: "public CommonResponse getDefaultDropDown()"
+//  },
+//  {...}
+// ]
+//
+//
+//
+function _createSwitchyardDeclarationInfoList(declarationTexts) {
+    let switchyardDeclarationInfoList = [];
+
+    // iterate declarationTexts
+    for (let index = 0; index < declarationTexts.length; index++) {
+        let switchyardDeclarationInfo = {};
+        // start at @httpMethod
+        if (declarationTexts[index].match(/(@POST|@GET)/gm)) {
+
+            // httpMethod
+            if (declarationTexts[index].match(/(@GET)/gm)) {
+                switchyardDeclarationInfo.httpMethod = 'Get';
+            } else if (declarationTexts[index].match(/(@POST)/gm)) {
+                switchyardDeclarationInfo.httpMethod = 'Post';
+            }
+
+            // path
+            // log.out(`declarationTexts[index + 1] = ${declarationTexts[index + 1]}`);
+            if (declarationTexts[index + 1].match(/(@Path)/gm)) {
+
+                // extract path
+                // from: "\t@Path(\"changeStatusEDSAutoBurstSpeed\")",
+                // to: \"changeStatusEDSAutoBurstSpeed\"
+                let matches = declarationTexts[index + 1].match(/\".*\"/gm);
+                if (matches) {
+                    let text3 = string.replaceall('\"', '', matches[0]);
+                    text3 = `/${text3}`;
+                    switchyardDeclarationInfo.path = text3;
+                }
+            }
+
+            // log.out(`declarationTexts[index + 3] = ${declarationTexts[index + 3]}`);
+            let matches = declarationTexts[index + 3].match(/public.*\)/gm);
+            if (matches) {
+                switchyardDeclarationInfo.methodHeader = matches[0];
+            }
+
+
+            // save to result array
+            switchyardDeclarationInfoList.push(switchyardDeclarationInfo);
+        }
+
+    }
+
+
+    return switchyardDeclarationInfoList;
+}
+
 module.exports = function (switchyardInterfaceDeclarationFile, switchyardInterfaceImplementationFile, targetPath) {
 
     // calculate controller name
@@ -54,34 +131,42 @@ public class ${controllerNameUpperCase}Controller {
 
     // prepare method implementation list
     let implementationText = file.readFile(switchyardInterfaceImplementationFile);
-    // remove line break to make match() works
-    // implementationText = string.replaceall('\n', '[:)newline(:]', implementationText);
-
     // Create Array containing each line of implementationText
     let implementationTexts = string.tokenize(implementationText, /\n/gm);
 
-    // log.out(`implementationTexts=${stringify(implementationTexts, null, 2)}`);
+    // prepare method declaration list
+    let declarationText = file.readFile(switchyardInterfaceDeclarationFile);
+    // Create Array containing each line of declarationText
+    let declarationTexts = string.tokenize(declarationText, /\n/gm);
+
+    // log.out(`declarationTexts=${stringify(declarationTexts, null, 2)}`);
+    let switchyardDeclarationInfoList = _createSwitchyardDeclarationInfoList(declarationTexts);
+    // log.out(`switchyardDeclarationInfoList=${stringify(switchyardDeclarationInfoList, null, 2)}`);
 
 
+    for (let declarationInfo of switchyardDeclarationInfoList) {
 
-    for (let method of methodList) {
-        methodCount++;
-
-        // prepare method header , remove ;
-        let tokens = string.tokenize(method, ';');
-        // method = "public methodName(xxx request)"
-        method = tokens[0];
-        method = string.replaceall('(', '\\(', method);
-        method = string.replaceall(')', '\\)', method);
+        // declarationInfo.methodHeader = "public methodName(xxx request)"
+        let text5 = declarationInfo.methodHeader;
+        text5 = string.replaceall('(', '\\(', text5);
+        text5 = string.replaceall(')', '\\)', text5);
 
         // create method search pattern
-        pattern = new RegExp(`${method}[ ]+{`, "gm");
-        log.out(`pattern=${pattern}`);
+        pattern = new RegExp(`${text5}[ ]+{`, "gm");
+        // log.out(`pattern=${pattern}`);
 
         // find matching method declaration
         let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
-        log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
+        // log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
 
+        let httpMethod = declarationInfo.httpMethod;
+        let MethodPath = declarationInfo.path;
+
+        text += `\t@${httpMethod}Mapping(path = "${MethodPath}", produces = "application/json")\n`;
+        extractedMethodLines.forEach(element => {
+            text += `${element}\n`;
+        });
+        text += `\n`;
 
         // if (matches) {
         //     // reformat text again
@@ -99,7 +184,7 @@ public class ${controllerNameUpperCase}Controller {
     text += `\n}`
     file.write(targetPath, text);
 
-    log.out(`methodCount=${methodCount}`);
+    log.out(`declarationInfo.length=${switchyardDeclarationInfoList.length}`);
     return `controllers.createSpringBootRESTController.js: created REST controller at: ${targetPath}\n methodCount=${methodCount}`;
 
 }
