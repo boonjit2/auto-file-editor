@@ -4,7 +4,7 @@ let log = require('./controllers/log');
 let inspectTargetSwitchyardProject = require('./controllers/inspectTargetSwitchyardProject');
 let createSpringBootProject = require('./controllers/createSpringBootProject');
 let createRequestExample = require('./controllers/createRequestExample');
-
+let createSpringBootRESTController = require('./controllers/createSpringBootRESTController');
 
 // console.log('config=',stringify(config));
 let result = "";
@@ -21,6 +21,10 @@ for (let selected of config.job.selected) {
         result += createRequestExample(selected.switchyardProjectInfoFile,
             selected.targetRestResourceFile,
             selected.outputFile);
+    } else if (selected.controller === "createSpringBootRESTController") {
+        result += createSpringBootRESTController(selected.switchyardInterfaceDeclarationFile,
+            selected.switchyardInterfaceImplementationFile,
+            selected.targetPath);
     }
 
     log.write(config.job.logFile, result);
