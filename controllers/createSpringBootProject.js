@@ -59,6 +59,23 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
         , /{{projectNameUppercase}}/gm,
         projectNameUppercase);
 
+    // pom file
+    file.replaceInfile(
+        path.join(targetPath, '/pom.xml')
+        , /{{projectNameLowercase}}/gm,
+        projectNameLowercase);
+
+    file.replaceInfile(
+        path.join(targetPath, '/pom.xml')
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+    let projectVersion = '1.0.0'
+    file.replaceInfile(
+        path.join(targetPath, '/pom.xml')
+        , /{{projectVersion}}/gm,
+        projectVersion);
+
     // parse switchyard info
     let switchyardRaw = file.readFile(switchyardProjectInfoFile);
     let switchyardInfo = JSON.parse(switchyardRaw);

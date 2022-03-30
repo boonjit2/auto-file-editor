@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>th.co.ais.mynetwork.planning</groupId>
 	<artifactId>{{projectNameLowercase}}</artifactId>
-	<version>{{project_version}}</version>
+	<version>{{projectVersion}}</version>
 	<packaging>war</packaging>
 	<name>{{projectNameLowercase}}</name>
 	<description>{{projectNameLowercase}} project for Spring Boot</description>
