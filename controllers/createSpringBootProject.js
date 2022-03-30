@@ -105,7 +105,7 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
                     , /LOGGER\./gm,
                     'log.');
 
-                // TODO: apply annotation before the header of the class
+                // TODO: apply @Slf4j annotation before the header of the class
             }
 
         }

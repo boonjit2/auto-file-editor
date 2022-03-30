@@ -18,6 +18,13 @@ module.exports =
                 "projectNameUppercase": "CentralizeDB"
             },
             {
+                "controller": "createSpringBootRESTController",
+                "description": "create Spring Boot REST controller using data from Switchyard controller files",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceInterfaceBean.java",
+                "targetFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
+            },
+            {
                 "controller": "createRequestExample",
                 "description": "generate request examples from the target switchyard project",
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
@@ -32,6 +39,11 @@ module.exports =
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON"
             // }
             // {
+            //     "controller": "inspectTargetSwitchyardProject",
+            //     "targetPath": "D:/myNetworkAppSwitchYard/alarmGateway",
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON"
+            // }
+            // {
             //     "controller": "createSpringBootProject",
             //     "description": "create Spring Boot project folder from template and switchyardProjectInfo to targetPath",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
@@ -39,13 +51,26 @@ module.exports =
             //     "targetPath": "D:/auto-file-editor/logs/centralizedb",
             //     "projectNameUppercase": "CentralizeDB"
             // }
+            // {
+            //     "controller": "createSpringBootProject",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
+            //     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //     "targetPath": "D:/myNetworkAppSpringBoot/alarmgateway",
+            //     "projectNameUppercase": "alarmGateway"
+            // }
             {
-                "controller": "createRequestExample",
-                "description": "generate request examples from the target switchyard project",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
-            }
+                "controller": "createSpringBootRESTController",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceInterfaceBean.java",
+                "targetPath": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
+            },
+            // {
+            //     "controller": "createRequestExample",
+            //     "description": "generate request examples from the target switchyard project",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
+            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
+            // }
         ]
     }
 
