@@ -45,11 +45,61 @@ public class ${controllerNameUpperCase}Controller {
     //		{{ControllerLogic}}
     //        return response;
     //    }
-    
-    
-    `
+      
+`
 
+    // try to get a list of methods from the declaration
+    let methodCount = 0;
+    let methodList = file.getAllMatches(switchyardInterfaceDeclarationFile, /public.*\(.*\);/gm);
+
+    // prepare method implementation list
+    let implementationText = file.readFile(switchyardInterfaceImplementationFile);
+    // remove line break to make match() works
+    // implementationText = string.replaceall('\n', '[:)newline(:]', implementationText);
+
+    // Create Array containing each line of implementationText
+    let implementationTexts = string.tokenize(implementationText, /\n/gm);
+
+    // log.out(`implementationTexts=${stringify(implementationTexts, null, 2)}`);
+
+
+
+    for (let method of methodList) {
+        methodCount++;
+
+        // prepare method header , remove ;
+        let tokens = string.tokenize(method, ';');
+        // method = "public methodName(xxx request)"
+        method = tokens[0];
+        method = string.replaceall('(', '\\(', method);
+        method = string.replaceall(')', '\\)', method);
+
+        // create method search pattern
+        pattern = new RegExp(`${method}[ ]+{`, "gm");
+        log.out(`pattern=${pattern}`);
+
+        // find matching method declaration
+        let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
+        log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
+
+
+        // if (matches) {
+        //     // reformat text again
+        //     let text2 = '';
+        //     text2 = string.replaceall('@Override', '', matches[0]);
+        //     text2 = string.replaceall('{{newline}}', '\n', text2);
+
+        //     text += `${text2}\n`;
+        // } else {
+        //     text += `${method} { // Error: ATE can't find this method implementation }\n`;
+        // }
+
+    }
+
+    text += `\n}`
     file.write(targetPath, text);
 
-    return `controllers.createSpringBootRESTController.js: created REST controller at: ${targetPath}`;
+    log.out(`methodCount=${methodCount}`);
+    return `controllers.createSpringBootRESTController.js: created REST controller at: ${targetPath}\n methodCount=${methodCount}`;
+
 }
