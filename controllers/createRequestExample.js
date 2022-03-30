@@ -104,19 +104,21 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     let requestInfoList = [];
 
     // get lines with /public*(.*[ ]request)/gm
-    let pattern = /public.*\(.*[ ]?request[ ]?\)/gm;
+    let pattern = /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
     let matches = file.getAllMatches(targetRestResourceFile, pattern);
     // extract only (xxx request)
     requestInfoList = matches.map(member => {
         let subStrings = string.tokenize(member, /[\(\) ]+/gm);
 
         // map to request info
+        let requestVariableName = subStrings[subStrings.length - 1];
         let requestClassName = subStrings[subStrings.length - 2];
         let requestMethodName = subStrings[subStrings.length - 3];
 
         return {
             requestMethodName,
-            requestClassName
+            requestClassName,
+            requestVariableName
         };
     });
 
@@ -131,6 +133,11 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
             for (let privateVariable of privateVariableList) {
                 requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
             }
+        } else {
+            // no javaFileInfo means it might be a primitive type , such as List<string>
+            requestInfo.requestBodyExample = {};
+            requestInfo.requestBodyExample[requestInfo.requestVariableName] = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
+
         }
 
     }
