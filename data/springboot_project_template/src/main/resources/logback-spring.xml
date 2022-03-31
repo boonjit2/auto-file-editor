@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="HOME_LOG" value="/log/mynetwork/pre_pr.log"/>
+    <property name="HOME_LOG" value="/log/mynetwork/{{projectNameLowercase}}.log"/>
 
     <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/log/archived/pre_pr.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/log/archived/{{projectNameLowercase}}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, 

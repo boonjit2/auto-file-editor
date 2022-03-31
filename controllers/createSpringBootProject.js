@@ -76,6 +76,11 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
         , /{{projectVersion}}/gm,
         projectVersion);
 
+    // TODO : modify resources/logback-spring.xml
+
+    // TODO : modify \springboot_project_template\src\main\webapp\WEB-INF\jboss-web.xml
+
+
     // parse switchyard info
     let switchyardRaw = file.readFile(switchyardProjectInfoFile);
     let switchyardInfo = JSON.parse(switchyardRaw);
@@ -110,10 +115,12 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
 
         }
 
-        // handle pom files
+        //TODO : handle pom files
         if (member.fileName === 'pom.xml') {
 
         }
+
+
 
 
     }
