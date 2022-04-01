@@ -74,3 +74,20 @@ module.exports.extractJavaMethod = function (allLines, headerPattern, maxExtract
 }
 
 
+module.exports.extractXmlValue = function (arrayOfLines, detectPattern, begin, end) {
+    let XmlValue = null;
+
+    arrayOfLines.forEach(element => {
+        let matches = element.match(detectPattern);
+        if (matches) {
+            let s = matches[0];
+
+            // remove heading and tailing strings such as "<key>value</key>" to just "value"
+            s = this.replaceall(begin, '', s);
+            s = this.replaceall(end, '', s);
+            XmlValue = s;
+        }
+    });
+
+    return XmlValue;
+}

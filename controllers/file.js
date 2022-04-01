@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 var path = require('path');
 const log = require('./log');
 const replace = require('replace-in-file');
+const string = require('./string');
 
 function _isFile(fileName) {
     return fs.lstatSync(fileName).isFile()
@@ -29,6 +30,23 @@ module.exports.write = function (targetPath, data) {
         }
 
         console.log(`file.write: Done: Wrote to file: ${targetPath}`);
+    });
+}
+
+module.exports.writeArrayOfLinesToFile = function (targetPath, arrayOfLines) {
+
+    let data = '';
+    arrayOfLines.forEach(element => {
+        data += `element\n`
+    });
+
+    fs.writeFile(targetPath, data, 'utf8', function (err) {
+        if (err) {
+            console.log("file.write: Error:");
+            return console.log(err);
+        }
+
+        // console.log(`file.writeArrayOfLinesToFile: Done: Wrote to file: ${targetPath}`);
     });
 }
 
@@ -78,6 +96,13 @@ module.exports.readFile = function (FilePath) {
 module.exports.readFileToJson = function (FilePath) {
     let raw = fs.readFileSync(FilePath, { encoding: 'utf8' });
     return JSON.parse(raw);
+}
+
+module.exports.readFileToArrayOfLines = function (FilePath) {
+    let raw = fs.readFileSync(FilePath, { encoding: 'utf8' });
+    // Create Array containing each line of declarationText
+    let arrayOfLines = string.tokenize(raw, /\n/gm);
+    return arrayOfLines;
 }
 
 module.exports.copy = function (src, dest) {
