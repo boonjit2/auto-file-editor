@@ -81,11 +81,11 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
     return switchyardDeclarationInfoList;
 }
 
-module.exports = function (switchyardInterfaceDeclarationFile, switchyardInterfaceImplementationFile, targetPath) {
+module.exports = function (switchyardInterfaceDeclarationFile, switchyardInterfaceImplementationFile, outputFile) {
 
     // calculate controller name
     //          xxxController.java
-    let subs = path.basename(targetPath).split(/[Cc]ontroller\.java/gm);
+    let subs = path.basename(outputFile).split(/[Cc]ontroller\.java/gm);
     //          ["xxx" ,"Controller.java"]
     let controllerNameUpperCase = subs[0];
 
@@ -182,9 +182,9 @@ public class ${controllerNameUpperCase}Controller {
     }
 
     text += `\n}`
-    file.write(targetPath, text);
+    file.write(outputFile, text);
 
     log.out(`declarationInfo.length=${switchyardDeclarationInfoList.length}`);
-    return `controllers.createSpringBootRESTController.js: created REST controller at: ${targetPath}\n methodCount=${methodCount}`;
+    return `controllers.createSpringBootRESTController.js: created REST controller at: ${outputFile}\n methodCount=${methodCount}`;
 
 }

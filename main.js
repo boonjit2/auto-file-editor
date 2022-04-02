@@ -24,7 +24,7 @@ for (let selected of config.job.selected) {
     } else if (selected.controller === "createSpringBootRESTController") {
         result += createSpringBootRESTController(selected.switchyardInterfaceDeclarationFile,
             selected.switchyardInterfaceImplementationFile,
-            selected.targetPath);
+            selected.outputFile);
     }
 
     log.write(config.job.logFile, result);
