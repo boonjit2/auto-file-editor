@@ -122,10 +122,13 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
 
         }
 
-        //TODO : handle pom files
-        if (member.fileName === 'pom.xml') {
+        // handle pom files
+        // Note: no need to automate dependencies yet, this job can
+        // still be manually doable
+        // if (member.fileName === 'pom.xml') {
+        // }
 
-        }
+
 
         // get switchyard contextPath and put it into \springboot_project_template\src\main\webapp\WEB-INF\jboss-web.xml
         if (member.fileName === 'switchyard.xml') {
