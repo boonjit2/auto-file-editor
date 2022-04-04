@@ -240,48 +240,97 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
     let results = [];
     let result;
-    let requestInfoList = [];
 
     // get context path
     let contextPath = _getSwitchyardContextPath(switchyardProjectInfoFile);
 
-    // try to get lines with requestMethodName(.*)
-    let pattern = /public.*\(.*[ ]?(request|data|)[ ]?\)/gm;
-    let matches = file.getAllMatches(targetRestResourceFile, pattern);
+    // TODO: fix matching algo, they don't name the variable in standards 
+    //
+    // create an array containing method declarations
+    // from:
+    //      package th.co.ais.mynetwork.alarmgateway;
+    //      import javax.ws.rs.Consumes;
+    //      ...
+    //      import javax.ws.rs.POST;
+    // 
+    // @Path("/")
+    // public interface ListServiceRestResource {          << starting point
+    // 	@POST
+    // 	@Path("testService")
+    // 	@Produces({"application/json"})
+    // 	public responseData testService(requestTestBean request);  << get this one to array
+    //
+    // 	@POST
+    // 	@Path("getSiteCodeSiteName")
+    // 	@Produces({"application/json"})
+    // 	public responseData getSiteCodeSiteName();  << get this one to array
+    //  ...
 
-    // these are 2 patterns we should have matched
-    // 1. public.* requestMethodName(requestClassName requestVariableName)
-    // 2. public.* requestMethodName();
-    for (let element of matches) {
-        let matches1 = element.match(/public.*\(.*[ ]?(request|data)[ ]?\)/gm);
-        let matches2 = element.match(/public.*\([ ]?[ ]?\)/gm);
-        if (matches1) {
-            let subStrings = string.tokenize(matches1[0], /[\(\) ]+/gm);
-            // [ ... requestMethodName,requestClassName,requestVariableName ]
-            let requestURL = '';
-            let requestVariableName = subStrings[subStrings.length - 1];
-            let requestClassName = subStrings[subStrings.length - 2];
-            let requestMethodName = subStrings[subStrings.length - 3];
-
-            requestInfoList.push({
-                requestURL, requestVariableName, requestClassName, requestMethodName
-            });
-
-        } else if (matches2) {
-            let subStrings = string.tokenize(matches2[0], /[\(\) ]+/gm);
-            // [ ... requestMethodName ]
-            let requestURL = '';
-            let requestVariableName = null;
-            let requestClassName = null;
-            let requestMethodName = subStrings[subStrings.length - 1];
-
-            requestInfoList.push({
-                requestURL, requestVariableName, requestClassName, requestMethodName
-            });
+    // get all lines to array
+    let allRestResourceLines = file.readFileToArrayOfLines(targetRestResourceFile);
+    // find starting index
+    let startIndex = 0;
+    for (let i = 0; i < allRestResourceLines.length; i++) {
+        // the first '{' is the start
+        if (allRestResourceLines[i].match(/{/gm)) {
+            startIndex = i;
         }
     }
 
+    // extract lines
+    let methodDeclarations = [];
+    for (let i2 = startIndex + 1; i2 < allRestResourceLines.length; i2++) {
+        let pattern = /(.*);$/gm
+        let matches = allRestResourceLines[i2].match(pattern);
+        if (matches) {
+            methodDeclarations.concat(matches);
+        }
+    }
+    log.out(`methodDeclarations=${stringify(methodDeclarations, null, 2)}`);
 
+    let requestInfoList = [];
+
+    // pattern1: xxx(yyy zzz);
+
+    // pattern2: xxx();
+
+
+    throw new Error('Breakpoint');
+
+    // let pattern = /public.*\(.*[ ]?(request|data|)[ ]?\)/gm;
+    // let matches = file.getAllMatches(targetRestResourceFile, pattern);
+    // log.out(`matches=${stringify(matches, null, 2)}`);
+    // these are 2 patterns we should have matched
+    // 1. public.* requestMethodName(requestClassName requestVariableName)
+    // 2. public.* requestMethodName();
+    // for (let element of matches) {
+    //     let matches1 = element.match(/public.*\(.*[ ]?(request|data)[ ]?\)/gm);
+    //     let matches2 = element.match(/public.*\([ ]?\)/gm);
+    //     if (matches1) {
+    //         let subStrings = string.tokenize(matches1[0], /[\(\) ]+/gm);
+    //         // [ ... requestMethodName,requestClassName,requestVariableName ]
+    //         let requestURL = '';
+    //         let requestVariableName = subStrings[subStrings.length - 1];
+    //         let requestClassName = subStrings[subStrings.length - 2];
+    //         let requestMethodName = subStrings[subStrings.length - 3];
+
+    //         requestInfoList.push({
+    //             requestURL, requestVariableName, requestClassName, requestMethodName
+    //         });
+
+    //     } else if (matches2) {
+    //         let subStrings = string.tokenize(matches2[0], /[\(\) ]+/gm);
+    //         // [ ... requestMethodName ]
+    //         let requestURL = '';
+    //         let requestVariableName = null;
+    //         let requestClassName = null;
+    //         let requestMethodName = subStrings[subStrings.length - 1];
+
+    //         requestInfoList.push({
+    //             requestURL, requestVariableName, requestClassName, requestMethodName
+    //         });
+    //     }
+    // }
 
     // extract only (xxx request)
     // requestInfoList = matches.map(member => {
