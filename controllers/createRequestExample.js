@@ -5,6 +5,84 @@ const stringify = require('json-stringify-safe');
 const path = require('path');
 const string = require('./string');
 
+// try to find the http method from requestMethodName
+// example from:
+//         @POST
+//         ...
+//         @Path("getSiteCodeSiteName")
+//         ...
+//         /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
+//
+//  to:
+//      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
+function _getRequestURL(contextPath, requestMethodName, targetRestResourceFile) {
+    let requestURL = null;
+    let httpMethod = 'UNKNOWN'
+    let requestPath = '/UNKNOWN'
+    let hostname = '{{host}}';
+    let allLines = file.readFileToArrayOfLines(targetRestResourceFile);
+    // log.out(`allLines=${stringify(allLines, null, 2)}`);
+    // throw new Error('Breakpoint');
+
+    // create match pattern for public.*methodName line , this will be a starting point to search for @POST
+    let pattern = new RegExp(`public.*${requestMethodName}\(.*[ ]?(request|data)[ ]?\)`, "gm");
+
+    // iterate allLines
+    for (let i = 0; i < allLines.length; i++) {
+        // match the starting point?
+        let maxLookupDistance = 6;
+        let startIndex = i - maxLookupDistance;
+        let endIndex = i;
+        if (allLines[i].match(pattern)) {
+            // looking back for few lines from allLines[startIndex] to allLines[endIndex]
+            for (let j = startIndex; j < endIndex; j++) {
+                // match @POST or @GET
+                if (allLines[j].match(/@(POST)/gm)) {
+                    httpMethod = 'POST';
+                }
+                if (allLines[j].match(/@(GET)/gm)) {
+                    httpMethod = 'GET';
+                }
+                if (allLines[j].match(/@Path\(".*"\)/gm)) {
+
+                    // extract what inside the ""
+                    let st = allLines[j].match(/@Path\(".*"\)/gm);
+                    // log.out(`st=${stringify(st)}`);
+                    let tokens = string.tokenize(st[0], /\"/gm);
+                    // tokens now should be = [ "@Path(", "listWifiTemplateScript" , ")" ]
+                    requestPath = tokens[tokens.length - 2];
+                }
+            }
+
+            // summarize
+            requestURL = `${httpMethod} ${hostname}${contextPath}/${requestPath}`;
+
+            // return on first match
+            break;
+        }
+    }
+
+
+    return requestURL;
+}
+
+
+function _getSwitchyardContextPath(switchyardProjectInfoFile) {
+    let switchyardProjectInfoList = file.readFileToJson(switchyardProjectInfoFile);
+    let contextPath = null;
+    for (let member of switchyardProjectInfoList) {
+        if (member.fileName === 'switchyard.xml') {
+            let switchyardLines = file.readFileToArrayOfLines(member.fullPath);
+            // log.out(`switchyardLines=${stringify(switchyardLines, null, 2)}`);
+            contextPath = string.extractXmlValue(switchyardLines, /<resteasy:contextPath>.*<\/resteasy:contextPath>/gm, '<resteasy:contextPath>', '</resteasy:contextPath>');
+            if (contextPath === null) {
+                throw new Error(`Unable to find contextPath from ${member.fullPath}`);
+            }
+            contextPath = '/' + contextPath;
+        }
+    }
+    return contextPath;
+}
 
 function _getJavaFileInfo(javaFileName, switchyardProjectInfoFile) {
     // parse
@@ -103,6 +181,9 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     let result;
     let requestInfoList = [];
 
+    // get context path
+    let contextPath = _getSwitchyardContextPath(switchyardProjectInfoFile);
+
     // get lines with /public*(.*[ ]request)/gm
     let pattern = /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
     let matches = file.getAllMatches(targetRestResourceFile, pattern);
@@ -116,6 +197,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
         let requestMethodName = subStrings[subStrings.length - 3];
 
         return {
+            requestURL: '',
             requestMethodName,
             requestClassName,
             requestVariableName
@@ -139,6 +221,18 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
             requestInfo.requestBodyExample[requestInfo.requestVariableName] = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
 
         }
+
+        // try to find the http method from requestMethodName
+        // example from:
+        //         @POST
+        //         ...
+        //         @Path("getSiteCodeSiteName")
+        //         ...
+        //         /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
+        //
+        //  to:
+        //      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
+        requestInfo.requestURL = _getRequestURL(contextPath, requestInfo.requestMethodName, targetRestResourceFile);
 
     }
 

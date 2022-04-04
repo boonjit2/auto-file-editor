@@ -10,8 +10,8 @@ module.exports.matchCount = function (original, pattern) {
     if (matches) { return matches.length } else { return 0; }
 }
 
-module.exports.tokenize = function (string, pattern) {
-    let subStrings = string.split(pattern);
+module.exports.tokenize = function (st, pattern) {
+    let subStrings = st.split(pattern);
     if (subStrings[subStrings.length - 1] === '') {
         subStrings.pop();
     }
