@@ -274,28 +274,63 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
         // the first '{' is the start
         if (allRestResourceLines[i].match(/{/gm)) {
             startIndex = i;
+            break;
         }
     }
+    // log.out(`startIndex=${startIndex}`);
 
     // extract lines
     let methodDeclarations = [];
     for (let i2 = startIndex + 1; i2 < allRestResourceLines.length; i2++) {
-        let pattern = /(.*);$/gm
+        let pattern = /(.*);/gm
         let matches = allRestResourceLines[i2].match(pattern);
         if (matches) {
-            methodDeclarations.concat(matches);
+            methodDeclarations.push(allRestResourceLines[i2]);
         }
     }
-    log.out(`methodDeclarations=${stringify(methodDeclarations, null, 2)}`);
 
     let requestInfoList = [];
 
-    // pattern1: xxx(yyy zzz);
+    methodDeclarations.forEach(element => {
+        // pattern2: xxx();
+        let pattern2 = /\([ ]?\);/gm;
+        // pattern1: xxx(yyy zzz);
+        let pattern1 = /\(.*\);/gm;
+        let tokens = string.tokenize(element, /[\(\) ;]+/gm);
 
-    // pattern2: xxx();
+        if (element.match(pattern2)) {
+            // pattern2: xxx();
+            let matches2 = element.match(pattern2);
+            // log.out(`matches2=${stringify(matches2, null, 2)}`);
+
+            let requestInfo = {
+                requestURL: null,
+                requestVariableName: null,
+                requestClassName: null,
+                requestMethodName: tokens[tokens.length - 1]
+            }
+            requestInfoList.push(requestInfo);
 
 
-    throw new Error('Breakpoint');
+        } else if (element.match(pattern1)) {
+            // pattern1: xxx(yyy zzz);
+            let matches1 = element.match(pattern1);
+            // log.out(`matches1=${stringify(matches1, null, 2)}`);
+
+            let requestInfo = {
+                requestURL: null,
+                requestVariableName: tokens[tokens.length - 1],
+                requestClassName: tokens[tokens.length - 2],
+                requestMethodName: tokens[tokens.length - 3]
+            }
+
+            requestInfoList.push(requestInfo);
+        }
+
+    });
+
+    // log.out(`requestInfoList=${stringify(requestInfoList, null, 2)}`);
+    // throw new Error('Breakpoint');
 
     // let pattern = /public.*\(.*[ ]?(request|data|)[ ]?\)/gm;
     // let matches = file.getAllMatches(targetRestResourceFile, pattern);
