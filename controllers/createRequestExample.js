@@ -164,7 +164,7 @@ function _getPrivateVariableList(javaFileInfo) {
     for (let privateVariableLine of privateVariableLines) {
         // break to small tokens = [ ["private","xx","yy"], ["private","aa","bb"] ...]
         let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm);
-        log.out(`tokens=${stringify(tokens, null, 2)}`);
+        // log.out(`tokens=${stringify(tokens, null, 2)}`);
         if (tokens.length >= 2) {
             let name = tokens[tokens.length - 1];
             let type = tokens[tokens.length - 2];
@@ -181,13 +181,23 @@ function _getPrivateVariableList(javaFileInfo) {
 function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile) {
     let resolved = `${type}`;
     // log.out(`_resolveJavaVariableToJson(): type=${type}, depthLimit=${depthLimit}`);
-    log.out(`type=${type}, depthLimit=${depthLimit}`);
+    // log.out(`type=${type}, depthLimit=${depthLimit}`);
 
     // int|byte|short|long|float|double|boolean
     if (depthLimit <= 0) {
         let result = resolved;
         // log.out(`case:1, result=${result}`);
         return result;
+    } else if (type.toLowerCase().match(/(list)<.*>/gm)) {
+        // list of another types
+        let results = [];
+        // get <listType>
+        let tokens = string.tokenize(type, /[ <>]+/gm);
+        // log.out(`case:5,tokens=${stringify(tokens)}`);
+        let listType = tokens[1];
+        results.push(_resolveJavaVariableToJson(listType, depthLimit - 1, switchyardProjectInfoFile))
+        // log.out(`case:5,results=${stringify(results)}`);
+        return results;
     } else if (type.toLowerCase().match(/(int|integer|byte|short|long|double)/gm)) {
         let result = 0;
         // log.out(`case:2,result=${result}`);
@@ -200,23 +210,16 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         let result = false;
         // log.out(`case:4,result=${result}`);
         return "";
-    } else if (type.toLowerCase().match(/(list)<.*>/gm)) {
-        // list of another types
-        let results = [];
-        // get <listType>
-        let tokens = string.tokenize(type, /[ <>]+/gm);
-        // log.out(`case:5,tokens=${stringify(tokens)}`);
-        let listType = tokens[1];
-        results.push(_resolveJavaVariableToJson(listType, depthLimit - 1, switchyardProjectInfoFile))
-        // log.out(`case:5,results=${stringify(results)}`);
-        return results;
     } else {
         // another className to resolve:
         let resolved = 'ATE Error: unable to resolve java variable';
         let javaFileInfo = _getJavaFileInfo(`${type}.java`, switchyardProjectInfoFile);
+        log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
 
         if (javaFileInfo) {
             let privateVariableList = _getPrivateVariableList(javaFileInfo);
+            log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
+
 
             for (let privateVariable of privateVariableList) {
                 resolved[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
@@ -306,7 +309,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
             if (javaFileInfo) {
                 let privateVariableList = _getPrivateVariableList(javaFileInfo);
-                log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
+                // log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
                 requestInfo.requestBodyExample = {};
                 for (let privateVariable of privateVariableList) {
