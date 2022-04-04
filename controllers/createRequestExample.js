@@ -25,7 +25,7 @@ function _getRequestURL(contextPath, requestMethodName, targetRestResourceFile) 
     // throw new Error('Breakpoint');
 
     // create match pattern for public.*methodName line , this will be a starting point to search for @POST
-    let pattern = new RegExp(`public.*${requestMethodName}\(.*[ ]?(request|data)[ ]?\)`, "gm");
+    let pattern = new RegExp(`public.*${requestMethodName}\(.*[ ]?(request|data|)[ ]?\)`, "gm");
 
     // iterate allLines
     for (let i = 0; i < allLines.length; i++) {
@@ -184,42 +184,81 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     // get context path
     let contextPath = _getSwitchyardContextPath(switchyardProjectInfoFile);
 
-    // get lines with /public*(.*[ ]request)/gm
-    let pattern = /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
+    // try to get lines with requestMethodName(.*)
+    let pattern = /public.*\(.*[ ]?(request|data|)[ ]?\)/gm;
     let matches = file.getAllMatches(targetRestResourceFile, pattern);
+
+    // these are 2 patterns we should have matched
+    // 1. public.* requestMethodName(requestClassName requestVariableName)
+    // 2. public.* requestMethodName();
+    for (let element of matches) {
+        let matches1 = element.match(/public.*\(.*[ ]?(request|data)[ ]?\)/gm);
+        let matches2 = element.match(/public.*\([ ]?[ ]?\)/gm);
+        if (matches1) {
+            let subStrings = string.tokenize(matches1[0], /[\(\) ]+/gm);
+            // [ ... requestMethodName,requestClassName,requestVariableName ]
+            let requestURL = '';
+            let requestVariableName = subStrings[subStrings.length - 1];
+            let requestClassName = subStrings[subStrings.length - 2];
+            let requestMethodName = subStrings[subStrings.length - 3];
+
+            requestInfoList.push({
+                requestURL, requestVariableName, requestClassName, requestMethodName
+            });
+
+        } else if (matches2) {
+            let subStrings = string.tokenize(matches2[0], /[\(\) ]+/gm);
+            // [ ... requestMethodName ]
+            let requestURL = '';
+            let requestVariableName = null;
+            let requestClassName = null;
+            let requestMethodName = subStrings[subStrings.length - 1];
+
+            requestInfoList.push({
+                requestURL, requestVariableName, requestClassName, requestMethodName
+            });
+        }
+    }
+
+
+
     // extract only (xxx request)
-    requestInfoList = matches.map(member => {
-        let subStrings = string.tokenize(member, /[\(\) ]+/gm);
+    // requestInfoList = matches.map(member => {
+    //     let subStrings = string.tokenize(member, /[\(\) ]+/gm);
 
-        // map to request info
-        let requestVariableName = subStrings[subStrings.length - 1];
-        let requestClassName = subStrings[subStrings.length - 2];
-        let requestMethodName = subStrings[subStrings.length - 3];
+    //     // map to request info
+    //     // [ ... requestMethodName,requestClassName,requestVariableName ]
+    //     let requestVariableName = subStrings[subStrings.length - 1];
+    //     let requestClassName = subStrings[subStrings.length - 2];
+    //     let requestMethodName = subStrings[subStrings.length - 3];
 
-        return {
-            requestURL: '',
-            requestMethodName,
-            requestClassName,
-            requestVariableName
-        };
-    });
+    //     return {
+    //         requestURL: '',
+    //         requestMethodName,
+    //         requestClassName,
+    //         requestVariableName
+    //     };
+    // });
 
     // iterate requestInfoList
     for (let requestInfo of requestInfoList) {
-        let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
 
-        if (javaFileInfo) {
-            let privateVariableList = _getPrivateVariableList(javaFileInfo);
+        if (requestInfo.requestClassName) {
+            let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
 
-            requestInfo.requestBodyExample = {};
-            for (let privateVariable of privateVariableList) {
-                requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
+            if (javaFileInfo) {
+                let privateVariableList = _getPrivateVariableList(javaFileInfo);
+
+                requestInfo.requestBodyExample = {};
+                for (let privateVariable of privateVariableList) {
+                    requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
+                }
+            } else {
+                // no javaFileInfo means it might be a primitive type , such as List<string>
+                requestInfo.requestBodyExample = {};
+                requestInfo.requestBodyExample[requestInfo.requestVariableName] = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
+
             }
-        } else {
-            // no javaFileInfo means it might be a primitive type , such as List<string>
-            requestInfo.requestBodyExample = {};
-            requestInfo.requestBodyExample[requestInfo.requestVariableName] = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
-
         }
 
         // try to find the http method from requestMethodName
