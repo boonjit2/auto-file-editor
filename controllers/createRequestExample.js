@@ -207,28 +207,29 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         // log.out(`case:3,result=${result}`);
         return result;
     } else if (type.toLowerCase() === 'string') {
-        let result = false;
+        let result = "";
         // log.out(`case:4,result=${result}`);
-        return "";
+        return result;
     } else {
         // another className to resolve:
-        let resolved = 'ATE Error: unable to resolve java variable';
+        let result = {};
         let javaFileInfo = _getJavaFileInfo(`${type}.java`, switchyardProjectInfoFile);
-        log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
+        // log.out(`case:6 javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
 
         if (javaFileInfo) {
             let privateVariableList = _getPrivateVariableList(javaFileInfo);
-            log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
+            // log.out(`case:6 privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
 
             for (let privateVariable of privateVariableList) {
-                resolved[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
+                result[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
+                // log.out(`case:6 result["${privateVariable.name}"]=${stringify(result[privateVariable.name])}`);
+
             }
 
         }
 
-        result = resolved;
-        // log.out(`case:6,result=${stringify(result)}`);
+        // log.out(`case:6,results=${stringify(result)}`);
         return result;
     }
 
@@ -304,7 +305,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     for (let requestInfo of requestInfoList) {
 
         if (requestInfo.requestClassName) {
-            log.out(`requestInfo.requestClassName=${requestInfo.requestClassName}`);
+            // log.out(`requestInfo.requestClassName=${requestInfo.requestClassName}`);
             let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
 
             if (javaFileInfo) {
