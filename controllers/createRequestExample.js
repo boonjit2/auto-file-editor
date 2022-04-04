@@ -127,32 +127,52 @@ function _getPrivateVariableList(javaFileInfo) {
     //         return requestIdList;
     //     }
     let allLines = file.readFileToArrayOfLines(javaFileInfo.fullPath);
+    // log.out(`allLines=${stringify(allLines, null, 2)}`);
+
     let subs = string.tokenize(javaFileInfo.fileName, /\.java/gm);
     let className = subs[0];
+    let pattern = new RegExp(`class[ ]+${className}[ ]+{`, "gm");
+    let startIndex = 0;
+    let endIndex = 0;
     for (let i = 0; i < allLines.length; i++) {
-
         // find the class header index
-
-
-        // find the class's first method/constructor index (or just end of the class)
-
+        if (allLines[i].match(pattern)) {
+            startIndex = i + 1;
+            break; // stop the iteration
+        }
     }
+    // log.out(`startIndex=${startIndex}`);
+
+    // find the class's first method/constructor index (or just end of the class)
+    for (let j = startIndex; j < allLines.length; j++) {
+        // find the class header index
+        if (allLines[j].match(/(.*)[ ]+{/gm)) {
+            endIndex = j;
+            break; // stop the iteration
+        }
+    }
+    // log.out(`endIndex=${endIndex}`);
 
     // try to capture all private variables to the list = ["private xx yy", "private aa bb" ...]
+    let privateVariableLines = [];
+    for (let k = startIndex; k < endIndex; k++) {
+        privateVariableLines.push(allLines[k]);
+    }
+    // log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
 
-
-
-    let variables = [];
-
-    for (let privateVariable of privateVariables) {
+    let privateVariables = [];
+    for (let privateVariableLine of privateVariableLines) {
         // break to small tokens = [ ["private","xx","yy"], ["private","aa","bb"] ...]
-        let tokens = string.tokenize(privateVariable, /[\(\) ;]+/gm);
-        let name = tokens[tokens.length - 1];
-        let type = tokens[tokens.length - 2];
-        variables.push({ name, type });
+        let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm);
+        log.out(`tokens=${stringify(tokens, null, 2)}`);
+        if (tokens.length >= 2) {
+            let name = tokens[tokens.length - 1];
+            let type = tokens[tokens.length - 2];
+            privateVariables.push({ name, type });
+        }
     }
 
-    return variables;
+    return privateVariables;
 }
 
 
@@ -286,7 +306,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
             if (javaFileInfo) {
                 let privateVariableList = _getPrivateVariableList(javaFileInfo);
-                log.out(`privateVariableList=${stringify(privateVariableList), null, 2}`);
+                log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
                 requestInfo.requestBodyExample = {};
                 for (let privateVariable of privateVariableList) {
