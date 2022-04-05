@@ -19,7 +19,7 @@ module.exports =
             },
             {
                 "controller": "createSpringBootRESTController",
-                "description": "create Spring Boot REST controller using data from Switchyard controller files",
+                "description": "create Spring Boot REST controller using data from Switchyard controller files, also list its services into logs",
                 "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
                 "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceInterfaceBean.java",
                 "outputFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
@@ -46,6 +46,11 @@ module.exports =
             //     "targetPath": "D:/myNetworkAppSwitchYard/alarmGateway",
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON"
             // }
+            // {
+            //     "controller": "inspectTargetSwitchyardProject",
+            //     "targetPath": "D:/myNetworkAppSwitchYard/certificate",
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON"
+            // }
             //
             // createSpringBootProject
             //
@@ -65,6 +70,13 @@ module.exports =
             //     "targetPath": "D:/auto-file-editor/logs/alarmgateway",
             //     "projectNameUppercase": "alarmGateway"
             // }
+            // {
+            //     "controller": "createSpringBootProject",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
+            //     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //     "targetPath": "D:/myNetworkAppSpringBoot/certificate",
+            //     "projectNameUppercase": "Certificate"
+            // }
             //
             //  createSpringBootRESTController
             //
@@ -74,6 +86,12 @@ module.exports =
             //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceInterfaceBean.java",
             //     "outputFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
             // }
+            {
+                "controller": "createSpringBootRESTController",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceInterfaceBean.java",
+                "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
+            }
             //
             // createRequestExample
             //
@@ -84,12 +102,12 @@ module.exports =
             //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
             // }
-            {
-                "controller": "createRequestExample",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
-                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_alarmGateway.JSON",
-            }
+            // {
+            //     "controller": "createRequestExample",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
+            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
+            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_alarmGateway.JSON",
+            // }
         ]
     }
 

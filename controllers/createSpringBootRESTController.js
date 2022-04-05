@@ -5,6 +5,8 @@ const path = require('path');
 const string = require('./string');
 
 
+let logLine = '';
+
 // from:
 //
 // [
@@ -68,6 +70,28 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
             let matches = declarationTexts[index + 3].match(/public.*\)/gm);
             if (matches) {
                 switchyardDeclarationInfo.methodHeader = matches[0];
+
+                // parse method header data
+                let tokens = string.tokenize(switchyardDeclarationInfo.methodHeader, /[\(\) ;]+/gm);
+                if (tokens.length === 5) {
+                    // example header format (5 positions):
+                    // public ResponseData getMenuByTransporter (ReqGetMenuUser request)
+                    switchyardDeclarationInfo.requestVariableName = tokens[4];
+                    switchyardDeclarationInfo.requestClassName = tokens[3];
+                    switchyardDeclarationInfo.methodName = tokens[2];
+
+                } else if (tokens.length === 3) {
+                    // 3 positions: public ResponseData getBloodType()
+                    switchyardDeclarationInfo.requestVariableName = null;
+                    switchyardDeclarationInfo.requestClassName = null;
+                    switchyardDeclarationInfo.methodName = tokens[2];
+                } else {
+                    throw new Error(`Unable to parse method header data of string=${switchyardDeclarationInfo.methodHeader}`);
+                    // switchyardDeclarationInfo.requestVariableName = null;
+                    // switchyardDeclarationInfo.requestClassName = null;
+                    // switchyardDeclarationInfo.methodName = null;
+                }
+
             }
 
 
@@ -146,18 +170,23 @@ public class ${controllerNameUpperCase}Controller {
 
     for (let declarationInfo of switchyardDeclarationInfoList) {
 
-        // declarationInfo.methodHeader = "public methodName(xxx request)"
-        let text5 = declarationInfo.methodHeader;
-        text5 = string.replaceall('(', '\\(', text5);
-        text5 = string.replaceall(')', '\\)', text5);
+        // create pattern strings
+        let patternString = `${declarationInfo.methodName}[ ]?\\\(`;
+        if (declarationInfo.requestClassName) {
+            patternString += `${declarationInfo.requestClassName} .*\\\)[ ]?{`;
+        } else {
+            patternString += `.*\\\)[ ]?{`;
+        }
 
         // create method search pattern
-        pattern = new RegExp(`${text5}[ ]+{`, "gm");
-        // log.out(`pattern=${pattern}`);
+        pattern = new RegExp(`${patternString}`, "gm");
+        log.out(`pattern=${pattern}`);
 
         // find matching method declaration
         let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
         // log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
+
+        // throw new Error('Breakpoint');
 
         let httpMethod = declarationInfo.httpMethod;
         let MethodPath = declarationInfo.path;
