@@ -38,6 +38,9 @@ let logLine = '';
 function _createSwitchyardDeclarationInfoList(declarationTexts) {
     let switchyardDeclarationInfoList = [];
 
+    // clear
+    logLine = '';
+
     // iterate declarationTexts
     for (let index = 0; index < declarationTexts.length; index++) {
         let switchyardDeclarationInfo = {};
@@ -73,6 +76,13 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
 
                 // parse method header data
                 let tokens = string.tokenize(switchyardDeclarationInfo.methodHeader, /[\(\) ;]+/gm);
+
+                // add to log
+                // tokens.forEach(element => {
+                //     logLine += `${element} `;
+                // });
+                // logLine += `\n`;
+
                 if (tokens.length === 5) {
                     // example header format (5 positions):
                     // public ResponseData getMenuByTransporter (ReqGetMenuUser request)
@@ -80,11 +90,14 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
                     switchyardDeclarationInfo.requestClassName = tokens[3];
                     switchyardDeclarationInfo.methodName = tokens[2];
 
+                    logLine += `${switchyardDeclarationInfo.methodName}(${switchyardDeclarationInfo.requestClassName} ${switchyardDeclarationInfo.requestVariableName})\n`;
                 } else if (tokens.length === 3) {
                     // 3 positions: public ResponseData getBloodType()
                     switchyardDeclarationInfo.requestVariableName = null;
                     switchyardDeclarationInfo.requestClassName = null;
                     switchyardDeclarationInfo.methodName = tokens[2];
+
+                    logLine += `${switchyardDeclarationInfo.methodName}()\n`;
                 } else {
                     throw new Error(`Unable to parse method header data of string=${switchyardDeclarationInfo.methodHeader}`);
                     // switchyardDeclarationInfo.requestVariableName = null;
@@ -180,7 +193,7 @@ public class ${controllerNameUpperCase}Controller {
 
         // create method search pattern
         pattern = new RegExp(`${patternString}`, "gm");
-        log.out(`pattern=${pattern}`);
+        // log.out(`pattern=${pattern}`);
 
         // find matching method declaration
         let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
@@ -212,8 +225,9 @@ public class ${controllerNameUpperCase}Controller {
 
     text += `\n}`
     file.write(outputFile, text);
-
+    log.out(`${logLine}`);
     log.out(`declarationInfo.length=${switchyardDeclarationInfoList.length}`);
-    return `controllers.createSpringBootRESTController.js: created REST controller at: ${outputFile}\n methodCount=${methodCount}`;
+
+    return `${logLine}\ncontrollers.createSpringBootRESTController.js: created REST controller at: ${outputFile}\n methodCount=${methodCount}`;
 
 }
