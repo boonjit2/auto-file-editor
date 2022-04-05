@@ -146,6 +146,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 
 @RestController
 //@RequestMapping(path="/")
