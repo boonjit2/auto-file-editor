@@ -86,12 +86,12 @@ module.exports =
             //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceInterfaceBean.java",
             //     "outputFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
             // }
-            {
-                "controller": "createSpringBootRESTController",
-                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
-                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceInterfaceBean.java",
-                "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
-            }
+            // {
+            //     "controller": "createSpringBootRESTController",
+            //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
+            //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceInterfaceBean.java",
+            //     "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
+            // }
             //
             // createRequestExample
             //
@@ -108,6 +108,12 @@ module.exports =
             //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_alarmGateway.JSON",
             // }
+            {
+                "controller": "createRequestExample",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
+                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
+                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_certificate.JSON",
+            }
         ]
     }
 

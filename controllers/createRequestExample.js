@@ -210,6 +210,10 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         let result = "";
         // log.out(`case:4,result=${result}`);
         return result;
+    } else if (type.toLowerCase() === 'timestamp') {
+        let result = "Timestamp";
+        // log.out(`case:4,result=${result}`);
+        return result;
     } else {
         // another className to resolve:
         let result = {};
@@ -220,17 +224,19 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
             let privateVariableList = _getPrivateVariableList(javaFileInfo);
             // log.out(`case:6 privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
-
             for (let privateVariable of privateVariableList) {
                 result[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
                 // log.out(`case:6 result["${privateVariable.name}"]=${stringify(result[privateVariable.name])}`);
 
             }
 
+            // found the class data
+            return result;
         }
 
         // log.out(`case:6,results=${stringify(result)}`);
-        return result;
+        // not found the class data
+        return { ATEError: 'cannot resolve this type' };
     }
 
 }
