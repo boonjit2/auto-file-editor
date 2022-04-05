@@ -160,7 +160,8 @@ public class ${controllerNameUpperCase}Controller {
     //		{{ControllerLogic}}
     //        return response;
     //    }
-      
+    private static final Logger LOGGER = Logger.getLogger(${controllerNameUpperCase}Controller.class);
+    
 `
 
     // try to get a list of methods from the declaration
