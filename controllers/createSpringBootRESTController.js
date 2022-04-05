@@ -161,7 +161,12 @@ public class ${controllerNameUpperCase}Controller {
     //        return response;
     //    }
     private static final Logger LOGGER = Logger.getLogger(${controllerNameUpperCase}Controller.class);
-    
+
+        @PostMapping(path = "/hello", produces = "application/json")
+        public String hello() {
+            return "hello";
+        }
+
 `
 
     // try to get a list of methods from the declaration
