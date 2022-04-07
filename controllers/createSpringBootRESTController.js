@@ -167,6 +167,11 @@ public class ${controllerNameUpperCase}Controller {
             return "hello";
         }
 
+        // TODO: , add constructor from ListServiceInterfaceBean.java ?
+        public ${controllerNameUpperCase}() {
+            // TODO: add constructor logic here:
+        }
+
 `
 
     // try to get a list of methods from the declaration
