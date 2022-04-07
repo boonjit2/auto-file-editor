@@ -173,8 +173,9 @@ public class ${controllerNameUpperCase}Controller {
     private static final Logger LOGGER = Logger.getLogger(${controllerNameUpperCase}Controller.class);
 
         @PostMapping(path = "/hello", produces = "application/json")
-        public String hello() {
-            return "hello";
+        public String hello(@RequestBody com.fasterxml.jackson.databind.JsonNode request) {
+            LOGGER.info("hello"+request);
+            return "hello"+request;
         }
 `
 
@@ -236,6 +237,26 @@ public class ${controllerNameUpperCase}Controller {
         let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
         // log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
 
+        // insert @RequestBody annotation
+        //                       V          V
+        // ex: public methodName(@RequestBody requestClassName variable){
+
+        let beforeBrackets = extractedMethodLines[0].match(/.*\(/gm);
+        // public methodName(
+        // log.out(`beforeBrackets=${stringify(beforeBrackets, null, 2)}`);
+
+        let afterBrackets = extractedMethodLines[0].match(/\(.*/gm);
+        // (requestClassName variable){
+        afterBrackets[0] = afterBrackets[0].replace('(', '');
+        // requestClassName variable){
+        // log.out(`afterBrackets=${stringify(afterBrackets, null, 2)}`);
+
+        // sum it up
+        extractedMethodLines[0] = `${beforeBrackets}@RequestBody ${afterBrackets}`;
+        // fix (@RequestBody) to ()
+        extractedMethodLines[0] = extractedMethodLines[0].replace(/\([ ]*@RequestBody[ ]*\)/, '()');
+        log.out(`extractedMethodLines[0]=${extractedMethodLines[0]}`);
+
         // throw new Error('Breakpoint');
 
         let httpMethod = declarationInfo.httpMethod;
@@ -243,6 +264,7 @@ public class ${controllerNameUpperCase}Controller {
         // log.out(`MethodPath=${MethodPath}`);
 
         text += `\t@${httpMethod}Mapping(path = "${MethodPath}", produces = "application/json")\n`;
+
         extractedMethodLines.forEach(element => {
             text += `${element}\n`;
         });

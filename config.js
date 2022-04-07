@@ -54,14 +54,14 @@ module.exports =
             //
             // createSpringBootProject
             //
-            {
-                "controller": "createSpringBootProject",
-                "description": "create Spring Boot project folder from template and switchyardProjectInfo to targetPath",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
-                "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-                "targetPath": "D:/myNetworkAppSpringBoot/centralizedb",
-                "projectNameUppercase": "CentralizeDB"
-            }
+            // {
+            //     "controller": "createSpringBootProject",
+            //     "description": "create Spring Boot project folder from template and switchyardProjectInfo to targetPath",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
+            //     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //     "targetPath": "D:/myNetworkAppSpringBoot/centralizedb",
+            //     "projectNameUppercase": "CentralizeDB"
+            // }
             // {
             //     "controller": "createSpringBootProject",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
@@ -79,12 +79,12 @@ module.exports =
             // }
             //
             //  createSpringBootRESTController
-            // {
-            //     "controller": "createSpringBootRESTController",
-            //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-            //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceInterfaceBean.java",
-            //     "outputFile": "D:/myNetworkAppSpringBoot/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/controller/CentralizeDBController.java"
-            // }
+            {
+                "controller": "createSpringBootRESTController",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceInterfaceBean.java",
+                "outputFile": "D:/myNetworkAppSpringBoot/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/controller/CentralizeDBController.java"
+            }
             // {
             //     "controller": "createSpringBootRESTController",
             //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
