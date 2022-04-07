@@ -56,6 +56,8 @@ function _getRequestURL(contextPath, requestMethodName, targetRestResourceFile) 
 
             // summarize
             requestURL = `${httpMethod} ${hostname}${contextPath}/${requestPath}`;
+            // fix // to /
+            requestURL = string.replaceall('//', '/', requestURL);
 
             // return on first match
             break;
@@ -112,6 +114,7 @@ function _getJavaFileInfo(javaFileName, switchyardProjectInfoFile) {
 //   
 //
 function _getPrivateVariableList(javaFileInfo) {
+    // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
     // try to capture all private variables to the list = ["private xx yy", "private aa bb" ...]
     // let privateVariables = javaFileContent.match(/((private|String|int|byte|short|long|float|double|boolean|List.*)( )+)?(private|String|int|byte|short|long|float|double|boolean|List.*)( )+([a-zA-Z_]+);/gm);
     //
@@ -129,9 +132,8 @@ function _getPrivateVariableList(javaFileInfo) {
     let allLines = file.readFileToArrayOfLines(javaFileInfo.fullPath);
     // log.out(`allLines=${stringify(allLines, null, 2)}`);
 
-    let subs = string.tokenize(javaFileInfo.fileName, /\.java/gm);
-    let className = subs[0];
-    let pattern = new RegExp(`class[ ]+${className}[ ]+{`, "gm");
+    // let className = path.basename(javaFileInfo.fileName, '.java');
+    let pattern = /{/gm;
     let startIndex = 0;
     let endIndex = 0;
     for (let i = 0; i < allLines.length; i++) {
@@ -166,11 +168,13 @@ function _getPrivateVariableList(javaFileInfo) {
         let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm);
         // log.out(`tokens=${stringify(tokens, null, 2)}`);
         if (tokens.length >= 2) {
-            let name = tokens[tokens.length - 1];
-            let type = tokens[tokens.length - 2];
+            let name = tokens[tokens.length - 1].trim();
+            let type = tokens[tokens.length - 2].trim();
             privateVariables.push({ name, type });
         }
     }
+
+
 
     return privateVariables;
 }
@@ -206,13 +210,13 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         let result = false;
         // log.out(`case:3,result=${result}`);
         return result;
-    } else if (type.toLowerCase() === 'string') {
-        let result = "";
+    } else if (type.toLowerCase() === "string") {
+        let result = "String";
         // log.out(`case:4,result=${result}`);
         return result;
-    } else if (type.toLowerCase() === 'timestamp') {
+    } else if (type.toLowerCase() === "timestamp") {
         let result = "Timestamp";
-        // log.out(`case:4,result=${result}`);
+        // log.out(`case:8,result=${result}`);
         return result;
     } else {
         // another className to resolve:
@@ -221,8 +225,9 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         // log.out(`case:6 javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
 
         if (javaFileInfo) {
+
             let privateVariableList = _getPrivateVariableList(javaFileInfo);
-            // log.out(`case:6 privateVariableList=${stringify(privateVariableList, null, 2)}`);
+            // log.out(`_resolveJavaVariableToJson(): privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
             for (let privateVariable of privateVariableList) {
                 result[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
@@ -234,7 +239,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
             return result;
         }
 
-        // log.out(`case:6,results=${stringify(result)}`);
+        // log.out(`case:9,results=${stringify({ ATEError: 'cannot resolve this type' })}`);
         // not found the class data
         return { ATEError: 'cannot resolve this type' };
     }
@@ -249,28 +254,6 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
     // get context path
     let contextPath = _getSwitchyardContextPath(switchyardProjectInfoFile);
-
-    // TODO: fix matching algo, they don't name the variable in standards 
-    //
-    // create an array containing method declarations
-    // from:
-    //      package th.co.ais.mynetwork.alarmgateway;
-    //      import javax.ws.rs.Consumes;
-    //      ...
-    //      import javax.ws.rs.POST;
-    // 
-    // @Path("/")
-    // public interface ListServiceRestResource {          << starting point
-    // 	@POST
-    // 	@Path("testService")
-    // 	@Produces({"application/json"})
-    // 	public responseData testService(requestTestBean request);  << get this one to array
-    //
-    // 	@POST
-    // 	@Path("getSiteCodeSiteName")
-    // 	@Produces({"application/json"})
-    // 	public responseData getSiteCodeSiteName();  << get this one to array
-    //  ...
 
     // get all lines to array
     let allRestResourceLines = file.readFileToArrayOfLines(targetRestResourceFile);
@@ -294,6 +277,8 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
             methodDeclarations.push(allRestResourceLines[i2]);
         }
     }
+
+    // log.out(`methodDeclarations=${stringify(methodDeclarations, null, 2)}`);
 
     let requestInfoList = [];
 
@@ -335,61 +320,6 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
     });
 
-    // log.out(`requestInfoList=${stringify(requestInfoList, null, 2)}`);
-    // throw new Error('Breakpoint');
-
-    // let pattern = /public.*\(.*[ ]?(request|data|)[ ]?\)/gm;
-    // let matches = file.getAllMatches(targetRestResourceFile, pattern);
-    // log.out(`matches=${stringify(matches, null, 2)}`);
-    // these are 2 patterns we should have matched
-    // 1. public.* requestMethodName(requestClassName requestVariableName)
-    // 2. public.* requestMethodName();
-    // for (let element of matches) {
-    //     let matches1 = element.match(/public.*\(.*[ ]?(request|data)[ ]?\)/gm);
-    //     let matches2 = element.match(/public.*\([ ]?\)/gm);
-    //     if (matches1) {
-    //         let subStrings = string.tokenize(matches1[0], /[\(\) ]+/gm);
-    //         // [ ... requestMethodName,requestClassName,requestVariableName ]
-    //         let requestURL = '';
-    //         let requestVariableName = subStrings[subStrings.length - 1];
-    //         let requestClassName = subStrings[subStrings.length - 2];
-    //         let requestMethodName = subStrings[subStrings.length - 3];
-
-    //         requestInfoList.push({
-    //             requestURL, requestVariableName, requestClassName, requestMethodName
-    //         });
-
-    //     } else if (matches2) {
-    //         let subStrings = string.tokenize(matches2[0], /[\(\) ]+/gm);
-    //         // [ ... requestMethodName ]
-    //         let requestURL = '';
-    //         let requestVariableName = null;
-    //         let requestClassName = null;
-    //         let requestMethodName = subStrings[subStrings.length - 1];
-
-    //         requestInfoList.push({
-    //             requestURL, requestVariableName, requestClassName, requestMethodName
-    //         });
-    //     }
-    // }
-
-    // extract only (xxx request)
-    // requestInfoList = matches.map(member => {
-    //     let subStrings = string.tokenize(member, /[\(\) ]+/gm);
-
-    //     // map to request info
-    //     // [ ... requestMethodName,requestClassName,requestVariableName ]
-    //     let requestVariableName = subStrings[subStrings.length - 1];
-    //     let requestClassName = subStrings[subStrings.length - 2];
-    //     let requestMethodName = subStrings[subStrings.length - 3];
-
-    //     return {
-    //         requestURL: '',
-    //         requestMethodName,
-    //         requestClassName,
-    //         requestVariableName
-    //     };
-    // });
 
     // iterate requestInfoList
     for (let requestInfo of requestInfoList) {
@@ -414,6 +344,9 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
             }
         }
 
+
+
+
         // try to find the http method from requestMethodName
         // example from:
         //         @POST
@@ -427,6 +360,9 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
         requestInfo.requestURL = _getRequestURL(contextPath, requestInfo.requestMethodName, targetRestResourceFile);
 
     }
+
+    // log.out(`requestInfoList=${stringify(requestInfo, null, 2)}`);
+    // log.breakpoint();
 
     results = requestInfoList;
 

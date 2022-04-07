@@ -79,12 +79,12 @@ module.exports =
             // }
             //
             //  createSpringBootRESTController
-            {
-                "controller": "createSpringBootRESTController",
-                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceInterfaceBean.java",
-                "outputFile": "D:/myNetworkAppSpringBoot/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/controller/CentralizeDBController.java"
-            }
+            // {
+            //     "controller": "createSpringBootRESTController",
+            //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+            //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceInterfaceBean.java",
+            //     "outputFile": "D:/myNetworkAppSpringBoot/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/controller/CentralizeDBController.java"
+            // }
             // {
             //     "controller": "createSpringBootRESTController",
             //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
@@ -100,13 +100,12 @@ module.exports =
             //
             // createRequestExample
             //
-            // {
-            //     "controller": "createRequestExample",
-            //     "description": "generate request examples from the target switchyard project",
-            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
-            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
-            // }
+            {
+                "controller": "createRequestExample",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
+                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
+            }
             // {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",

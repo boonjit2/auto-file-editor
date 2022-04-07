@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports.write = function(logFile,data){
+module.exports.write = function (logFile, data) {
     fs.writeFile(logFile, data, 'utf8', function (err) {
         if (err) {
             console.log("log.write: Error:");
@@ -11,6 +11,10 @@ module.exports.write = function(logFile,data){
     });
 }
 
-module.exports.out = function(data){
+module.exports.out = function (data) {
     console.log(data);
+}
+
+module.exports.breakpoint = function () {
+    throw new Error('Breakpoint Reached');
 }
