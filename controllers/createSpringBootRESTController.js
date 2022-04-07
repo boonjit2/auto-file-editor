@@ -161,7 +161,6 @@ import org.apache.log4j.Logger;
 
 @RestController
 //@RequestMapping(path="/")
-@Slf4j
 public class ${controllerNameUpperCase}Controller {
     //	@Autowired
     //	public alarmGatewayManagementBean bean;
