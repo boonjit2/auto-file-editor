@@ -7,6 +7,9 @@ const string = require('./string');
 
 let logLine = '';
 
+
+
+
 // from:
 //
 // [
@@ -166,13 +169,28 @@ public class ${controllerNameUpperCase}Controller {
         public String hello() {
             return "hello";
         }
-
-        // TODO: , add constructor from ListServiceInterfaceBean.java ?
-        public ${controllerNameUpperCase}() {
-            // TODO: add constructor logic here:
-        }
-
 `
+
+    // Add a constructor codes
+    let allLines = file.readFileToArrayOfLines(switchyardInterfaceImplementationFile);
+    // log.out(`allLines=${stringify(allLines, null, 2)}`);
+    let switchyardInterfaceImplementationClassName = path.basename(switchyardInterfaceImplementationFile, '.java');
+    let constructorHeaderPattern = new RegExp(`${switchyardInterfaceImplementationClassName}[ ]*\\(\\)[ ]*{`, "gm");
+    // log.out(`constructorHeaderPattern=${constructorHeaderPattern}`);
+    let constructorTexts = string.extractJavaMethod(allLines, constructorHeaderPattern, 10000);
+    // log.out(`constructorTexts=${stringify(constructorTexts, null, 2)}`);
+
+    // rename a constructor
+    if (constructorTexts) {
+        constructorTexts[0] = string.replaceall(`${switchyardInterfaceImplementationClassName}`, `${controllerNameUpperCase}Controller`, constructorTexts[0]);
+    }
+
+    constructorTexts.forEach(line => {
+        text += `${line}\n`;
+    });
+    text += `\n`;
+    // throw new Error('Breakpoint');
+
 
     // try to get a list of methods from the declaration
     let methodCount = 0;

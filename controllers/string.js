@@ -34,7 +34,7 @@ module.exports.extractJavaMethod = function (allLines, headerPattern, maxExtract
     if (allLines.length) {
         for (let index = 0; index < allLines.length; index++) {
             let openedCurlBraceCount = 0;
-            if (allLines[index].match(pattern)) {
+            if (allLines[index].match(headerPattern)) {
                 // start extraction
                 // using the logic "counting { and } until all paired"
                 do {

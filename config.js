@@ -79,7 +79,12 @@ module.exports =
             // }
             //
             //  createSpringBootRESTController
-            //
+            {
+                "controller": "createSpringBootRESTController",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceInterfaceBean.java",
+                "outputFile": "D:/myNetworkAppSpringBoot/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/controller/CentralizeDBController.java"
+            }
             // {
             //     "controller": "createSpringBootRESTController",
             //     "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
@@ -108,12 +113,12 @@ module.exports =
             //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_alarmGateway.JSON",
             // }
-            {
-                "controller": "createRequestExample",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
-                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_certificate.JSON",
-            }
+            // {
+            //     "controller": "createRequestExample",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
+            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
+            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_certificate.JSON",
+            // }
         ]
     }
 
