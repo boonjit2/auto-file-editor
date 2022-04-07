@@ -67,7 +67,15 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
                 let matches = declarationTexts[index + 1].match(/\".*\"/gm);
                 if (matches) {
                     let text3 = string.replaceall('\"', '', matches[0]);
-                    text3 = `/${text3}`;
+
+                    // if the text begins with / (ex: "/xxx")
+                    if (text3.match(/^\//gm)) {
+                        // do nothing
+                    } else {
+                        // insert / at the beginning
+                        text3 = `/${text3}`;
+                    }
+
                     switchyardDeclarationInfo.path = text3;
                 }
             }
@@ -233,6 +241,7 @@ public class ${controllerNameUpperCase}Controller {
 
         let httpMethod = declarationInfo.httpMethod;
         let MethodPath = declarationInfo.path;
+        // log.out(`MethodPath=${MethodPath}`);
 
         text += `\t@${httpMethod}Mapping(path = "${MethodPath}", produces = "application/json")\n`;
         extractedMethodLines.forEach(element => {
