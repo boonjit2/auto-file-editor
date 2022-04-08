@@ -161,6 +161,16 @@ function _getPrivateVariableList(javaFileInfo) {
         privateVariableLines.push(allLines[k]);
     }
     // log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
+    // log.breakpoint();
+
+    // remove lines with comments , ex: "// private String xxx"
+    let pattern3 = new RegExp("\\/\\/", "gm");
+    // log.out(`pattern3=${pattern3}`);
+    for (let i = 0; i < privateVariableLines.length; i++) {
+        if (privateVariableLines[i].match(pattern3)) {
+            privateVariableLines[i] = "";
+        }
+    }
 
     let privateVariables = [];
     for (let privateVariableLine of privateVariableLines) {
