@@ -173,9 +173,9 @@ public class ${controllerNameUpperCase}Controller {
     private static final Logger LOGGER = Logger.getLogger(${controllerNameUpperCase}Controller.class);
 
         @PostMapping(path = "/hello", produces = "application/json")
-        public String hello(@RequestBody com.fasterxml.jackson.databind.JsonNode request) {
-            LOGGER.info("hello"+request);
-            return "hello"+request;
+        public String hello() {
+            // LOGGER.info("hello"+request);
+            return "hello";
         }
 `
 

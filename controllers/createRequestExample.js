@@ -237,7 +237,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         if (javaFileInfo) {
 
             let privateVariableList = _getPrivateVariableList(javaFileInfo);
-            // log.out(`_resolveJavaVariableToJson(): privateVariableList=${stringify(privateVariableList, null, 2)}`);
+            // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
             for (let privateVariable of privateVariableList) {
                 result[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, depthLimit - 1, switchyardProjectInfoFile);
@@ -335,22 +335,22 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     for (let requestInfo of requestInfoList) {
 
         if (requestInfo.requestClassName) {
-            // log.out(`requestInfo.requestClassName=${requestInfo.requestClassName}`);
+            // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
             let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
+            // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
+
 
             if (javaFileInfo) {
                 let privateVariableList = _getPrivateVariableList(javaFileInfo);
-                // log.out(`privateVariableList=${stringify(privateVariableList, null, 2)}`);
+                // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
                 requestInfo.requestBodyExample = {};
                 for (let privateVariable of privateVariableList) {
                     requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
                 }
             } else {
-                // no javaFileInfo means it might be a primitive type , such as List<string>
-                requestInfo.requestBodyExample = {};
-                requestInfo.requestBodyExample[requestInfo.requestVariableName] = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
-
+                // javaFileInfo===null means it might be a primitive type , such as List<string>
+                requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
             }
         }
 
