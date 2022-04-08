@@ -202,6 +202,9 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         let result = resolved;
         // log.out(`case:1, result=${result}`);
         return result;
+    } else if (type.toLowerCase() === 'arraylist') {
+        // this is not Arraylist<*> but just Arraylist
+        return [""];
     } else if (type.toLowerCase().match(/(list)<.*>/gm)) {
         // list of another types
         let results = [];
@@ -209,6 +212,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         let tokens = string.tokenize(type, /[ <>]+/gm);
         // log.out(`case:5,tokens=${stringify(tokens)}`);
         let listType = tokens[1];
+        // log.out(`case:5,listType=${listType}`);
         results.push(_resolveJavaVariableToJson(listType, depthLimit - 1, switchyardProjectInfoFile))
         // log.out(`case:5,results=${stringify(results)}`);
         return results;
