@@ -22,9 +22,18 @@ function _extractJavaPackagePath(javaSourceFile) {
     return javaPackagePath;
 }
 
-module.exports = function (targetPath, outputFile) {
-    let results = file.getDirectoryAndFileListRecursive(targetPath, 20);
+function _getSwitchyardXmlInfo(xmlFile) {
+    let switchyardXMLInfo;
+
+    switchyardXMLInfo = file.readXmlFiletoJsonObj(xmlFile);
+
+    return switchyardXMLInfo;
+}
+
+module.exports = function (targetPath, outputFile, outputFileSwitchyardXmlFileInfo) {
+    let results = file.getDirectoryAndFileListRecursive(targetPath, 60);
     // log.out(`results=${stringify(results, null, 2)}`);
+    let needToProcessSwitchyardXmlFile = true;
 
     // do analyse each file in the list
     for (let result of results) {
@@ -36,6 +45,27 @@ module.exports = function (targetPath, outputFile) {
 
             // log.out(`result.packagePath=${stringify(result.packagePath, null, 2)}`);
             // throw new Error('Breakpoint');
+        }
+
+        if (result.fileName.match(/^switchyard\.xml$/gm) && needToProcessSwitchyardXmlFile) {
+            log.out(`found switchyard.xml at ${result.fullPath}`);
+
+            result.isSwitchyardXml = true;
+            let switchyardJsonInfo = _getSwitchyardXmlInfo(result.fullPath);
+
+            // outputFileSwitchyardXmlFileInfo can be undefined
+            if (outputFileSwitchyardXmlFileInfo) {
+                // log.out(`switchyardJsonInfo=${stringify(switchyardJsonInfo, null, 2)}`);
+                let outputDataString = `${stringify(switchyardJsonInfo, null, 2)}`;
+                // log.out(`outputDataString=${outputDataString}`);
+                // log.out(`outputFileSwitchyardXmlFileInfo=${outputFileSwitchyardXmlFileInfo}`);
+                file.write(outputFileSwitchyardXmlFileInfo, outputDataString);
+            }
+
+            // log.breakpoint();
+
+            // no need to process another SwitchyardXmlFile if found in this project
+            needToProcessSwitchyardXmlFile = false;
         }
 
     }

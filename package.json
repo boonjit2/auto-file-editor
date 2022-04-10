@@ -13,7 +13,8 @@
     "fs-extra": "^10.0.1",
     "path": "^0.12.7",
     "replace-in-file": "^6.3.2",
-    "replaceall": "^0.1.6"
+    "replaceall": "^0.1.6",
+    "xml-js": "^1.6.11"
   },
   "engines": {
     "node": ">= 6.0.0",

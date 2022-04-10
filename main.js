@@ -11,7 +11,7 @@ let result = "";
 
 for (let selected of config.job.selected) {
     if (selected.controller === "inspectTargetSwitchyardProject") {
-        result += inspectTargetSwitchyardProject(selected.targetPath, selected.outputFile);
+        result += inspectTargetSwitchyardProject(selected.targetPath, selected.outputFile, selected.outputFileSwitchyardXmlFileInfo);
     } else if (selected.controller === "createSpringBootProject") {
         result += createSpringBootProject(selected.switchyardProjectInfoFile,
             selected.springBootTemplateFolder,

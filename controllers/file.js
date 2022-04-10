@@ -3,9 +3,23 @@ var path = require('path');
 const log = require('./log');
 const replace = require('replace-in-file');
 const string = require('./string');
+var convert = require('xml-js');
+
+const { stringify } = require('querystring');
+
 
 function _isFile(fileName) {
     return fs.lstatSync(fileName).isFile()
+}
+
+module.exports.readXmlFiletoJsonObj = function (filePath) {
+    let xmlString = this.readFile(filePath);
+    // log.out(`xmlString=${xmlString}`);
+    var json1 = convert.xml2json(xmlString, { compact: false, spaces: 0 });
+    let json2 = JSON.parse(json1);
+    // log.out(`json1=${json1}`);
+
+    return json2;
 }
 
 // function _getDirectoryAndFileList(folderPath,remainingLevelAllowed) {
@@ -23,14 +37,16 @@ function _isFile(fileName) {
 // }
 
 module.exports.write = function (targetPath, data) {
-    fs.writeFile(targetPath, data, 'utf8', function (err) {
-        if (err) {
-            console.log("file.write: Error:");
-            return console.log(err);
-        }
-
-        console.log(`file.write: Done: Wrote to file: ${targetPath}`);
-    });
+    fs.writeFileSync(targetPath, data, 'utf8');
+    // , function (err) ;
+    // {
+    //     if (err) {
+    //         console.log("file.write: Error:");
+    //         return console.log(err);
+    //     }
+    //     console.log(`file.write: Done: Wrote to file: ${targetPath}`);
+    // });
+    console.log(`file.write: Done: Wrote to file: ${targetPath}`);
 }
 
 module.exports.writeArrayOfLinesToFile = function (targetPath, arrayOfLines) {
