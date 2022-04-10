@@ -91,3 +91,18 @@ module.exports.extractXmlValue = function (arrayOfLines, detectPattern, begin, e
 
     return XmlValue;
 }
+
+// return index of matched member
+// starts searching from beginIndex to endIndex (inclusive)
+// return null if no matches
+module.exports.getFirstMatchedLine = function (arrayOfLines, detectPattern, beginIndex, endIndex) {
+    let index = null;
+
+    for (let i = beginIndex; i <= endIndex; i++) {
+        if (arrayOfLines[i].match(detectPattern)) {
+            return i;
+        }
+    }
+
+    return index;
+}

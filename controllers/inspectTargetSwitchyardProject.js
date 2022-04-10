@@ -1,11 +1,13 @@
 const file = require('./file');
 const log = require('./log');
 const clone = require('clone');
+const path = require('path');
+const string = require('./string');
 const stringify = require('json-stringify-safe');
 
 function _extractJavaPackagePath(javaSourceFile) {
 
-    let javaPackagePath = "";
+    let javaPackagePath = null;
 
     // get file content
     let fileContent = file.readFile(javaSourceFile);
@@ -23,7 +25,38 @@ function _extractJavaPackagePath(javaSourceFile) {
     return javaPackagePath;
 }
 
-function _getSwitchyardXmlInfo(xmlFile) {
+function _extractJavaPackageName(javaSourceFile) {
+
+    let javaPackageName = null;
+
+    // get file content
+    let fileContent = file.readFile(javaSourceFile);
+
+    // extract package line
+    let pattern = /^[ ]?package.*;$/gm;
+    let matches = pattern.exec(fileContent);
+    // replace "package "
+    let match = matches[0];
+    match = match.replace(/^[ ]?package[ ]*/gm, '')
+    // reformat
+    javaPackageName = match.replace(/[ ;]/gm, '');
+
+    return javaPackageName;
+}
+
+
+function _getSwitchyardInterfaceInfo(allLines) {
+
+    // find first line with @Path
+    let firstPathIndex = string.getFirstMatchedLine(allLines, /@Path\(/gm, 0, allLines.length - 1);
+    if (!firstPathIndex) {
+        throw new Error('unable to get first line with @Path');
+    }
+
+    return { firstPath: allLines[firstPathIndex] };
+}
+
+function _getSwitchyardXmlInfo(xmlFile, switchyardProjectInfoFile) {
     let switchyardXMLInfo = { source: null };
 
     switchyardXMLInfo.source = file.readXmlFiletoJsonObj(xmlFile);
@@ -94,17 +127,46 @@ function _getSwitchyardXmlInfo(xmlFile) {
                         }
                     }
                 }
-
-
             }
-
-
-
         }
     }
 
+    // from references , look into each .java file for more details
+    // cross-reference with switchyardProjectInfoFile
+    let switchyardProjectInfoList = file.readFileToJson(switchyardProjectInfoFile);
+    for (let reference of references) {
 
-    switchyardXMLInfo.processed = references;
+        let find1 = switchyardProjectInfoList.find((member) => {
+            if (member.isJavaSource) {
+                let memberClassFullName = `${member.packageName}.${member.className}`;
+                if (memberClassFullName === reference.interfaceName) {
+                    return true;
+                }
+
+            } else {
+                return false;
+            }
+
+        });
+
+        if (!find1) {
+            throw new Error(`unable to find service name ${reference.interfaceName} that was mentioned in references`);
+        }
+
+        // found matching class info
+        if (find1) {
+            // log.out(`found reference->class =${stringify(find1, null, 2)}`);
+            reference.fullPath = find1.fullPath;
+
+            let allLines = file.readFileToArrayOfLines(find1.fullPath);
+            let interfaceInfo = _getSwitchyardInterfaceInfo(allLines);
+            reference.interfaceInfo = interfaceInfo;
+
+        }
+
+    }
+
+    switchyardXMLInfo.processed = { references };
 
     return switchyardXMLInfo;
 }
@@ -121,16 +183,27 @@ module.exports = function (targetPath, outputFile, outputFileSwitchyardXmlFileIn
         if (pattern.test(result.fileName)) {
             result.isJavaSource = true;
             result.packagePath = _extractJavaPackagePath(result.fullPath);
+            result.packageName = _extractJavaPackageName(result.fullPath);
+            result.className = path.basename(result.fileName, '.java');
+
 
             // log.out(`result.packagePath=${stringify(result.packagePath, null, 2)}`);
             // throw new Error('Breakpoint');
         }
 
-        if (result.fileName.match(/^switchyard\.xml$/gm) && needToProcessSwitchyardXmlFile) {
+    }
+
+    // write results to project info file
+    file.write(outputFile, `${stringify(results, null, 2)}`);
+
+    // process details in switchyard.xml
+    let switchyardProjectInfoFile = outputFile;
+    for (let result of results) {
+        if (result.fileName.match(/^switchyard\.xml$/gm)) {
             log.out(`found switchyard.xml at ${result.fullPath}`);
 
             result.isSwitchyardXml = true;
-            let switchyardJsonInfo = _getSwitchyardXmlInfo(result.fullPath);
+            let switchyardJsonInfo = _getSwitchyardXmlInfo(result.fullPath, switchyardProjectInfoFile);
 
             // outputFileSwitchyardXmlFileInfo can be undefined
             if (outputFileSwitchyardXmlFileInfo) {
@@ -144,15 +217,13 @@ module.exports = function (targetPath, outputFile, outputFileSwitchyardXmlFileIn
             // log.breakpoint();
 
             // no need to process another SwitchyardXmlFile if found in this project
-            needToProcessSwitchyardXmlFile = false;
+            break;
         }
-
     }
 
 
 
-    // write results to project info file
-    file.write(outputFile, `${stringify(results, null, 2)}`);
+
 
     return "controllers.inspectTargetSwitchyardProject.js executed ok";
 }
