@@ -25,7 +25,38 @@ function _extractJavaPackagePath(javaSourceFile) {
 function _getSwitchyardXmlInfo(xmlFile) {
     let switchyardXMLInfo;
 
-    switchyardXMLInfo = file.readXmlFiletoJsonObj(xmlFile);
+    switchyardXMLInfo.source = file.readXmlFiletoJsonObj(xmlFile);
+
+    // process a big source object into something more informative
+    switchyardXMLInfo.processed = null;
+
+    // ge references from source
+    let references = [];
+    let reference = {};
+    for (let element1 of source.elements) {
+        // source.elements[{name:"sy:switchyard"}]
+        if (element1.name === 'sy:switchyard') {
+            for (let element2 of element1.elements) {
+                // source.elements[{name:"sy:switchyard",elements:[ {name:"sca:composite", elements:[ ] } ]}] and so on
+                if (element2.name === 'sca:composite') {
+                    for (let element3 of element2.elements) {
+                        if (element3.name === 'sca:reference') {
+                            reference.name = element3.attributes.name;
+                            for (let element4 of element3.elements) {
+                                if (element4.name === 'resteasy:binding.rest') {
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    switchyardXMLInfo.processed = references;
 
     return switchyardXMLInfo;
 }

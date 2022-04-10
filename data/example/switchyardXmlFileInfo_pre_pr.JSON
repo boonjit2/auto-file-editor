@@ -1,0 +1,793 @@
+{
+  "declaration": {
+    "attributes": {
+      "version": "1.0",
+      "encoding": "UTF-8"
+    }
+  },
+  "elements": [
+    {
+      "type": "element",
+      "name": "sy:switchyard",
+      "attributes": {
+        "xmlns:bean": "urn:switchyard-component-bean:config:2.0",
+        "xmlns:camel": "urn:switchyard-component-camel:config:2.0",
+        "xmlns:resteasy": "urn:switchyard-component-resteasy:config:2.0",
+        "xmlns:sca": "http://docs.oasis-open.org/ns/opencsa/sca/200912",
+        "xmlns:sy": "urn:switchyard-config:switchyard:2.0",
+        "name": "pre-pr",
+        "targetNamespace": "urn:th.co.ais.mynetwork.planning:pre-pr:1.0"
+      },
+      "elements": [
+        {
+          "type": "element",
+          "name": "sca:composite",
+          "attributes": {
+            "name": "pre-pr",
+            "targetNamespace": "urn:th.co.ais.mynetwork.planning:pre-pr:1.0"
+          },
+          "elements": [
+            {
+              "type": "element",
+              "name": "sca:component",
+              "attributes": {
+                "name": "PrePRRoute"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "bean:implementation.bean",
+                  "attributes": {
+                    "class": "th.co.ais.mynetwork.planning.pre_pr.PrePRRoute"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "sca:service",
+                  "attributes": {
+                    "name": "PrePRService"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.PrePRInterface"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "WorkflowManagementService"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.workflow.WorkflowManagementService"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "SAP"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sap.SAPRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "ConfigManagement"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.config_management.ConfigManagementRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "SapPiRestResourse"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sappi.SapPiRestResourse"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "EmployeeRestResource"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.employee.EmployeeRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "MasterProjectManagementRestResource"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_project.MasterProjectManagementRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "AamPrePRRestResourse"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.amm_pre_pr.AamPrePRRestResourse"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "MasterBudgetManagementRestResource"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_budget.MasterBudgetManagementRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "TptPrePrRestResource"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.tpt_pre_pr.TptPrePrRestResource"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "element",
+                  "name": "sca:reference",
+                  "attributes": {
+                    "name": "AuthorizeRestResource"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "sca:interface.java",
+                      "attributes": {
+                        "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.authorize.AuthorizeRestResource"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:service",
+              "attributes": {
+                "name": "PrePRService",
+                "promote": "PrePRRoute/PrePRService"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.PrePRInterface"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "PrePRRestGW"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.PrePRRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:contextPath",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "mynetwork/planning/pre-pr"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "WorkflowManagementService",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/WorkflowManagementService"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.workflow.WorkflowManagementService"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "WorkflowManagementServiceRestGW"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.workflow.WorkflowManagementService"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/workflow/management"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:timeout",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "50000"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "SAP",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/SAP"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sap.SAPRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "SAPRestGw"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sap.SAPRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/legacy/sap"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:timeout",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "50000"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "ConfigManagement",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/ConfigManagement"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.config_management.ConfigManagementRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "ConfigManagement"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.config_management.ConfigManagementRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/utility/config-management"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:timeout",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "50000"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "SapPiRestResourse",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/SapPiRestResourse"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sappi.SapPiRestResourse"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "SapPIGW"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.sappi.SapPiRestResourse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.sappi.host.ip}:${mynetwork.global.sappi.host.port}/mynetwork/legacy/sappi"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "EmployeeRestResource",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/EmployeeRestResource"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.employee.EmployeeRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "rest1"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.employee.EmployeeRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/planning/employee"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:timeout",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "20000"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "MasterProjectManagementRestResource",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/MasterProjectManagementRestResource"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_project.MasterProjectManagementRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "rest1"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_project.MasterProjectManagementRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/master/project"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:timeout",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "10000"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "AamPrePRRestResourse",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/AamPrePRRestResourse"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.amm_pre_pr.AamPrePRRestResourse"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "rest1"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.amm_pre_pr.AamPrePRRestResourse"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/legacy/aam-pre-pr"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "MasterBudgetManagementRestResource",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/MasterBudgetManagementRestResource"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_budget.MasterBudgetManagementRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "rest1"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.master_budget.MasterBudgetManagementRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/MyNetwork/FSW/MasterBudgetManagement"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "TptPrePrRestResource",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/TptPrePrRestResource"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.tpt_pre_pr.TptPrePrRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "TptPrePrServiceGW"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.tpt_pre_pr.TptPrePrRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/legacy/tpt-pre-pr"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "sca:reference",
+              "attributes": {
+                "name": "AuthorizeRestResource",
+                "multiplicity": "0..1",
+                "promote": "PrePRRoute/AuthorizeRestResource"
+              },
+              "elements": [
+                {
+                  "type": "element",
+                  "name": "sca:interface.java",
+                  "attributes": {
+                    "interface": "th.co.ais.mynetwork.planning.pre_pr.model.reference.authorize.AuthorizeRestResource"
+                  }
+                },
+                {
+                  "type": "element",
+                  "name": "resteasy:binding.rest",
+                  "attributes": {
+                    "name": "rest1"
+                  },
+                  "elements": [
+                    {
+                      "type": "element",
+                      "name": "resteasy:interfaces",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "th.co.ais.mynetwork.planning.pre_pr.model.reference.authorize.AuthorizeRestResource"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "element",
+                      "name": "resteasy:address",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/authorize/"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
