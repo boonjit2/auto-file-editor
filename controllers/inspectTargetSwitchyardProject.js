@@ -1,5 +1,6 @@
 const file = require('./file');
 const log = require('./log');
+const clone = require('clone');
 const stringify = require('json-stringify-safe');
 
 function _extractJavaPackagePath(javaSourceFile) {
@@ -23,7 +24,7 @@ function _extractJavaPackagePath(javaSourceFile) {
 }
 
 function _getSwitchyardXmlInfo(xmlFile) {
-    let switchyardXMLInfo;
+    let switchyardXMLInfo = { source: null };
 
     switchyardXMLInfo.source = file.readXmlFiletoJsonObj(xmlFile);
 
@@ -33,26 +34,73 @@ function _getSwitchyardXmlInfo(xmlFile) {
     // ge references from source
     let references = [];
     let reference = {};
-    for (let element1 of source.elements) {
+    for (let element1 of switchyardXMLInfo.source.elements) {
         // source.elements[{name:"sy:switchyard"}]
         if (element1.name === 'sy:switchyard') {
             for (let element2 of element1.elements) {
                 // source.elements[{name:"sy:switchyard",elements:[ {name:"sca:composite", elements:[ ] } ]}] and so on
                 if (element2.name === 'sca:composite') {
                     for (let element3 of element2.elements) {
-                        if (element3.name === 'sca:reference') {
+                        reference.name = null;
+                        if (element3.name === 'sca:service') {
                             reference.name = element3.attributes.name;
                             for (let element4 of element3.elements) {
                                 if (element4.name === 'resteasy:binding.rest') {
+                                    for (let element5 of element4.elements) {
+                                        if (element5.name === 'resteasy:contextPath') {
+                                            reference.contextPath = element5.elements[0].text;
+                                        }
+
+                                        if (element5.name === 'resteasy:interfaces') {
+                                            reference.interfaceName = element5.elements[0].text;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                        if (element3.name === 'sca:reference') {
+
+                            reference.name = element3.attributes.name;
+
+                            for (let element4 of element3.elements) {
+                                if (element4.name === 'resteasy:binding.rest') {
+                                    for (let element5 of element4.elements) {
+
+                                        if (element5.name === 'resteasy:interfaces') {
+                                            reference.interfaceName = element5.elements[0].text;
+                                        }
+
+                                        if (element5.name === 'resteasy:address') {
+                                            reference.address = element5.elements[0].text;
+                                        }
+
+                                    }
+
 
                                 }
                             }
+
+                            // log.out(`reference=${stringify(reference, null, 2)}`);
+
+
+                        }
+
+                        // save, clear data
+                        if (reference.name) {
+                            references.push(clone(reference));
+                            reference = {};
                         }
                     }
                 }
-            }
-        }
 
+
+            }
+
+
+
+        }
     }
 
 

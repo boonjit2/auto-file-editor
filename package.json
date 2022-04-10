@@ -14,7 +14,8 @@
     "path": "^0.12.7",
     "replace-in-file": "^6.3.2",
     "replaceall": "^0.1.6",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "clone": "^2.1.2"
   },
   "engines": {
     "node": ">= 6.0.0",
