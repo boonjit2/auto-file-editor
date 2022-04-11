@@ -4,6 +4,7 @@ const clone = require('clone');
 const path = require('path');
 const string = require('./string');
 const stringify = require('json-stringify-safe');
+const { format } = require('path');
 
 function _extractJavaPackagePath(javaSourceFile) {
 
@@ -45,15 +46,88 @@ function _extractJavaPackageName(javaSourceFile) {
 }
 
 
+// get "xxx" from .*YYY("xxx").*;
+function _getValueInsideDoubleQuote(stringLine) {
+    // log.out(`stringLine=${stringLine}`);
+    let matches = stringLine.match(/\(".*"\)/gm);
+    // log.out(`matches=${stringify(matches)}`);
+    if (matches) {
+        let values = string.tokenize(matches[0], /[\"\(\)]/gm);
+        // log.out(`values=${stringify(values)}`);
+        if (values.length > 0) {
+            return values[0];
+        }
+    }
+
+    return null;
+}
+
+
+// example: from
+// {
+// ...
+// @GET
+// @Path("/version")
+// @Produces({ "application/json" })
+// public String getVersion();
+// ...
+// @Path("/getConfig")
+// @POST
+// @Produces({ "application/json" })
+// @Consumes({ "application/json" })
+// public ConfigResponse getConfig(ConfigRequest request);
+// ...
+// }
+// to:
+//  [
+//     {
+//         httpMethod: "POST",
+//         methodName: "getConfig",
+//         requestClassName: "ConfigRequest" ,//(or null
+//         requestVariableName: ""
+//     }
+//  ]
+//
+// 
+function _getSwithyardServiceAnnotationInfo(allLines) {
+    let results = [];
+    // log.out(`allLines=${stringify(allLines, null, 2)}`);
+
+    // get only method's lines
+    let methodLines = string.getAllLinesFromFirstMatchToEndIndex(allLines, /{/gm, 0, allLines.length - 1);
+
+    // remove first and last member's value
+    methodLines[0] = "";
+    methodLines[methodLines.length - 1] = "";
+    // log.out(`methodLines=${stringify(methodLines, null, 2)}`);
+
+    let methodGroups = string.stringLinesToGroups(methodLines);
+    log.out(`methodGroups=${methodGroups(results, null, 2)}`);
+
+    // TODO: decode each methodLines groups
+
+
+
+    log.breakpoint();
+    return results;
+}
+
 function _getSwitchyardInterfaceInfo(allLines) {
 
+    let result = {};
+
     // find first line with @Path
-    let firstPathIndex = string.getFirstMatchedLine(allLines, /@Path\(/gm, 0, allLines.length - 1);
+    let firstPathIndex = string.getFirstMatchedLineIndex(allLines, /@Path\(/gm, 0, allLines.length - 1);
     if (!firstPathIndex) {
         throw new Error('unable to get first line with @Path');
     }
+    result.firstPath = _getValueInsideDoubleQuote(allLines[firstPathIndex]);
 
-    return { firstPath: allLines[firstPathIndex] };
+    // get all "lines of methods"
+    result.serviceAnnotationInfo = _getSwithyardServiceAnnotationInfo(allLines);
+
+
+    return result;
 }
 
 function _getSwitchyardXmlInfo(xmlFile, switchyardProjectInfoFile) {
