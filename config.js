@@ -40,7 +40,8 @@ module.exports =
             // {
             //     "controller": "inspectTargetSwitchyardProject",
             //     "targetPath": "D:/myNetworkAppSwitchYard/centralizedb",
-            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON"
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
+            //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_centralizedb.JSON"
             // }
             // {
             //     "controller": "inspectTargetSwitchyardProject",
@@ -50,14 +51,15 @@ module.exports =
             // {
             //     "controller": "inspectTargetSwitchyardProject",
             //     "targetPath": "D:/myNetworkAppSwitchYard/certificate",
-            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON"
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
+            //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_certificate.JSON"
             // }
-            {
-                "controller": "inspectTargetSwitchyardProject",
-                "targetPath": "D:/myNetworkAppSwitchYard/planning/pre-pr",
-                "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-                "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON"
-            }
+            // {
+            //     "controller": "inspectTargetSwitchyardProject",
+            //     "targetPath": "D:/myNetworkAppSwitchYard/planning/pre-pr",
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+            //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON"
+            // }
             //
             // createSpringBootProject
             //
@@ -107,12 +109,12 @@ module.exports =
             //
             // createRequestExample
             //
-            // {
-            //     "controller": "createRequestExample",
-            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
-            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
-            // }
+            , {
+                "controller": "createRequestExample",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
+                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
+            }
             // {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
