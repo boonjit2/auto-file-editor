@@ -260,8 +260,8 @@ module.exports.getJavaMethodInfo = function (stringLine) {
             let parameters = tokens.map(member => {
                 let params = this.tokenize(member, /[ ]+/gm, { removeEmptyMembers: true });
                 return {
-                    name: params[0],
-                    type: params[1]
+                    type: params[0],
+                    name: params[1]
                 }
             })
 
@@ -272,11 +272,12 @@ module.exports.getJavaMethodInfo = function (stringLine) {
     // then removes (.*) from the line , to [modifiers...] returnType methodname
     let stringLine2 = stringLine.replace(/\(.*\).*[;{}]/gm, '');
     // to [[modifiers...],"returnType", "methodname" ]
+
     let methodTokens = this.tokenize(stringLine2, /[ ]+/gm, { removeEmptyMembers: true });
     methodTokens = this.trimAllMembers(methodTokens);
 
-    methodInfo.methodName = methodTokens.pop(); // next last position
-    methodInfo.returnType = methodTokens.pop(); // last position
+    methodInfo.methodName = methodTokens.pop(); // last position
+    methodInfo.returnType = methodTokens.pop(); // next last position
     methodInfo.modifiers = methodTokens; // the rest
 
 

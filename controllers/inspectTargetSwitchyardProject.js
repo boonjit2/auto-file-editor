@@ -282,7 +282,7 @@ function _getSwitchyardXmlInfo(xmlFile, switchyardProjectInfoFile) {
         // found matching class info
         if (find1) {
             // log.out(`found reference->class =${stringify(find1, null, 2)}`);
-            reference.fullPath = find1.fullPath;
+            reference.projectInfoReference = find1;
 
             let allLines = file.readFileToArrayOfLines(find1.fullPath);
             let interfaceInfo = _getSwitchyardInterfaceInfo(allLines);
