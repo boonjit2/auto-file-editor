@@ -11,20 +11,33 @@ module.exports.matchCount = function (original, pattern) {
     if (matches) { return matches.length } else { return 0; }
 }
 
-module.exports.tokenize = function (st, pattern) {
+/** 
+ split strings into array of tokens
+ using regex pattern as a delimiter
+ option:{ 
+  removeEmptyMembers: true(default=false) 
+ }
+**/
+module.exports.tokenize = function (st, pattern, option) {
     let subStrings = st.split(pattern);
+
+    // remove last member with ''
     if (subStrings[subStrings.length - 1] === '') {
         subStrings.pop();
     }
 
-    // remove all member with value= ""
-    let subStrings2 = [];
-    subStrings.forEach(element => {
-        if (element !== '') {
-            subStrings2.push(element);
-        }
-    });
-    return subStrings2;
+    // option: remove all member with value= ""
+    if (option && option.removeEmptyMembers) {
+        let subStrings2 = [];
+        subStrings.forEach(element => {
+            if (element !== '') {
+                subStrings2.push(element);
+            }
+        });
+        return subStrings2;
+    }
+
+    return subStrings;
 }
 
 // Note: not compatible with regex matching, use string as input
@@ -146,6 +159,7 @@ module.exports.getAllLinesFromFirstMatchToEndIndex = function (arrayOfLines, det
 
     if (startCopyingIndex) {
         for (let j = startCopyingIndex; j <= endIndex; j++) {
+
             results.push(arrayOfLines[j]);
         }
     }
@@ -191,4 +205,45 @@ module.exports.stringLinesToGroups = function (arrayOfLines) {
 
     return groups;
 
+}
+
+
+/**
+convert "public Response insertUserAuthorization(String request);"
+to: {
+    modifiers:["public"],
+    name: "insertUserAuthorization",
+    returnType: "Response"
+    parameters:[
+        {
+            type: "String"
+            name: "request"
+        }
+    ]
+}
+*/
+module.exports.getJavaMethodInfo = function (stringLine) {
+    let methodInfo = {};
+
+    // test function
+    stringLine = "public Response insertUserAuthorization(String request);";
+
+    // get what is inside ()
+    let insideRoundBrackets = stringLine.match(/(?<=\().*?(?=\))/gm);
+    if (insideRoundBrackets) {
+
+        // insides are empty ()
+        if (insideRoundBrackets.length === 0) {
+            methodInfo.parameters = [];
+        } else if (insideRoundBrackets.length > 0) {
+            // insides have params (type name, type name ...)
+
+
+        }
+
+    }
+
+    log.out();
+    log.breakpoint();
+    return null;
 }

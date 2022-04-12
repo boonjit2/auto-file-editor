@@ -48,7 +48,7 @@ function _getRequestURL(contextPath, requestMethodName, targetRestResourceFile) 
                     // extract what inside the ""
                     let st = allLines[j].match(/@Path\(".*"\)/gm);
                     // log.out(`st=${stringify(st)}`);
-                    let tokens = string.tokenize(st[0], /\"/gm);
+                    let tokens = string.tokenize(st[0], /\"/gm, null);
                     // tokens now should be = [ "@Path(", "listWifiTemplateScript" , ")" ]
                     requestPath = tokens[tokens.length - 2];
                 }
@@ -175,7 +175,7 @@ function _getPrivateVariableList(javaFileInfo) {
     let privateVariables = [];
     for (let privateVariableLine of privateVariableLines) {
         // break to small tokens = [ ["private","xx","yy"], ["private","aa","bb"] ...]
-        let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm);
+        let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm, null);
         // log.out(`tokens=${stringify(tokens, null, 2)}`);
         if (tokens.length >= 2) {
             let name = tokens[tokens.length - 1].trim();
@@ -209,7 +209,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         // list of another types
         let results = [];
         // get <listType>
-        let tokens = string.tokenize(type, /[ <>]+/gm);
+        let tokens = string.tokenize(type, /[ <>]+/gm, null);
         // log.out(`case:5,tokens=${stringify(tokens)}`);
         let listType = tokens[1];
         // log.out(`case:5,listType=${listType}`);
@@ -301,7 +301,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
         let pattern2 = /\([ ]?\);/gm;
         // pattern1: xxx(yyy zzz);
         let pattern1 = /\(.*\);/gm;
-        let tokens = string.tokenize(element, /[\(\) ;]+/gm);
+        let tokens = string.tokenize(element, /[\(\) ;]+/gm, null);
 
         if (element.match(pattern2)) {
             // pattern2: xxx();

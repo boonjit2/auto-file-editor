@@ -86,7 +86,7 @@ function _createSwitchyardDeclarationInfoList(declarationTexts) {
                 switchyardDeclarationInfo.methodHeader = matches[0];
 
                 // parse method header data
-                let tokens = string.tokenize(switchyardDeclarationInfo.methodHeader, /[\(\) ;]+/gm);
+                let tokens = string.tokenize(switchyardDeclarationInfo.methodHeader, /[\(\) ;]+/gm, null);
 
                 // add to log
                 // tokens.forEach(element => {
@@ -207,12 +207,12 @@ public class ${controllerNameUpperCase}Controller {
     // prepare method implementation list
     let implementationText = file.readFile(switchyardInterfaceImplementationFile);
     // Create Array containing each line of implementationText
-    let implementationTexts = string.tokenize(implementationText, /\n/gm);
+    let implementationTexts = string.tokenize(implementationText, /\n/gm, null);
 
     // prepare method declaration list
     let declarationText = file.readFile(switchyardInterfaceDeclarationFile);
     // Create Array containing each line of declarationText
-    let declarationTexts = string.tokenize(declarationText, /\n/gm);
+    let declarationTexts = string.tokenize(declarationText, /\n/gm, null);
 
     // log.out(`declarationTexts=${stringify(declarationTexts, null, 2)}`);
     let switchyardDeclarationInfoList = _createSwitchyardDeclarationInfoList(declarationTexts);

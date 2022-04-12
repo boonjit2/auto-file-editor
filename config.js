@@ -7,7 +7,8 @@ module.exports =
                 "controller": "inspectTargetSwitchyardProject",
                 "description": "inspect Switchyard project folder in targetPath, then store data in outputFile",
                 "targetPath": "D:/myNetworkAppSwitchYard/centralizedb",
-                "outputFile": "D:/auto-file-editor/data/switchyardProjectInfo.JSON"
+                "outputFile": "D:/auto-file-editor/data/switchyardProjectInfo_centralizedb.JSON",
+                "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_centralizedb.JSON"
             },
             {
                 "controller": "createSpringBootProject",

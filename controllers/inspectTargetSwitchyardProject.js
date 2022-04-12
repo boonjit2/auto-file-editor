@@ -49,14 +49,30 @@ function _extractJavaPackageName(javaSourceFile) {
 // get "xxx" from .*YYY("xxx").*;
 function _getValueInsideDoubleQuote(stringLine) {
     // log.out(`stringLine=${stringLine}`);
-    let matches = stringLine.match(/\(".*"\)/gm);
+    let matches = stringLine.match(/(?<=\").*?(?=\")/gm);
     // log.out(`matches=${stringify(matches)}`);
     if (matches) {
-        let values = string.tokenize(matches[0], /[\"\(\)]/gm);
+        let value = matches[0];
+        return value;
+    }
+
+    return null;
+}
+
+// get "xxx" from .*YYY({ xxx }).*;
+function _getValueInsideCurlyBrace(stringLine) {
+    // log.out(`stringLine=${stringLine}`);
+    let matches = stringLine.match(/(?<=\{).*?(?=\})/gm);
+    // log.out(`matches=${stringify(matches)}`);
+    if (matches) {
+        let value = matches[0].trim();
         // log.out(`values=${stringify(values)}`);
-        if (values.length > 0) {
-            return values[0];
+        // remove "
+        if (value.match(/\"/gm)) {
+            value = value.replace(/\"/gm, '')
         }
+
+        return value;
     }
 
     return null;
@@ -102,13 +118,49 @@ function _getSwithyardServiceAnnotationInfo(allLines) {
     // log.out(`methodLines=${stringify(methodLines, null, 2)}`);
 
     let methodGroups = string.stringLinesToGroups(methodLines);
-    log.out(`methodGroups=${methodGroups(results, null, 2)}`);
+    // log.out(`methodGroups=${stringify(methodGroups, null, 2)}`);
 
-    // TODO: decode each methodLines groups
+    // decode each methodLines groups
+    // to:
+    // {
+    //     httpMethod:
+    //     path:
+    //     produce:
+    //     consume:
+    //     methodName:
+    //     responseClassName:
+    //     responseClassVariable:
+    // }
+    for (let group of methodGroups) {
+        let result = {};
+
+        for (let line of group) {
+            if (line.match(/@GET/gm)) {
+                result.httpMethod = "GET";
+            }
+            else if (line.match(/@POST/gm)) {
+                result.httpMethod = "POST";
+            }
+            else if (line.match(/@Path/gm)) {
+                result.path = _getValueInsideDoubleQuote(line);
+            }
+            else if (line.match(/@Produces/gm)) {
+                result.produce = _getValueInsideCurlyBrace(line);
+            }
+            else if (line.match(/@Consumes/gm)) {
+                result.consume = _getValueInsideCurlyBrace(line);
+            }
+            else if (line.match(/[ ]*public.*\(.*\);/gm)) {
+                result.methodInfo = string.getJavaMethodInfo(line);
+            }
+        }
+
+        results.push(result);
+    }
 
 
 
-    log.breakpoint();
+    // log.breakpoint();
     return results;
 }
 

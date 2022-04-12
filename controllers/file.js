@@ -117,7 +117,7 @@ module.exports.readFileToJson = function (FilePath) {
 module.exports.readFileToArrayOfLines = function (FilePath) {
     let raw = fs.readFileSync(FilePath, { encoding: 'utf8' });
     // Create Array containing each line of declarationText
-    let arrayOfLines = string.tokenize(raw, /\n/gm);
+    let arrayOfLines = string.tokenize(raw, /\n/gm, null);
     return arrayOfLines;
 }
 
