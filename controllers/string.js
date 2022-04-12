@@ -207,12 +207,20 @@ module.exports.stringLinesToGroups = function (arrayOfLines) {
 
 }
 
+/*
+    trim all members of the array of strings
+*/
+module.exports.trimAllMembers = function (arrayOfLines) {
+    return arrayOfLines.map(member => {
+        return member.trim()
+    });
+}
 
 /**
 convert "public Response insertUserAuthorization(String request);"
 to: {
     modifiers:["public"],
-    name: "insertUserAuthorization",
+    methodName: "insertUserAuthorization",
     returnType: "Response"
     parameters:[
         {
@@ -223,10 +231,17 @@ to: {
 }
 */
 module.exports.getJavaMethodInfo = function (stringLine) {
-    let methodInfo = {};
+    let methodInfo = {
+        modifiers: null,
+        returnType: null,
+        methodName: null,
+        parameters: null
+    };
 
     // test function
-    stringLine = "public Response insertUserAuthorization(String request);";
+    // stringLine = "public Response insertUserAuthorization(String request);";
+    // stringLine = "public Response insertUserAuthorization(String request, Integer uid);";
+    // stringLine = "public Response insertUserAuthorization();";
 
     // get what is inside ()
     let insideRoundBrackets = stringLine.match(/(?<=\().*?(?=\))/gm);
@@ -237,13 +252,36 @@ module.exports.getJavaMethodInfo = function (stringLine) {
             methodInfo.parameters = [];
         } else if (insideRoundBrackets.length > 0) {
             // insides have params (type name, type name ...)
+            let line = insideRoundBrackets[0];
+            // to: [ "type name","type name" ... ]
+            let tokens = this.tokenize(line, /[ ]*,[ ]*/gm, { removeEmptyMembers: true });
 
+            // to: [ {type:"type" name:"name"},{type:"type" name:"name"} ... ]
+            let parameters = tokens.map(member => {
+                let params = this.tokenize(member, /[ ]+/gm, { removeEmptyMembers: true });
+                return {
+                    name: params[0],
+                    type: params[1]
+                }
+            })
 
+            methodInfo.parameters = parameters;
         }
-
     }
 
-    log.out();
-    log.breakpoint();
-    return null;
+    // then removes (.*) from the line , to [modifiers...] returnType methodname
+    let stringLine2 = stringLine.replace(/\(.*\).*[;{}]/gm, '');
+    // to [[modifiers...],"returnType", "methodname" ]
+    let methodTokens = this.tokenize(stringLine2, /[ ]+/gm, { removeEmptyMembers: true });
+    methodTokens = this.trimAllMembers(methodTokens);
+
+    methodInfo.methodName = methodTokens.pop(); // next last position
+    methodInfo.returnType = methodTokens.pop(); // last position
+    methodInfo.modifiers = methodTokens; // the rest
+
+
+
+    // log.out(`methodInfo=${stringify(methodInfo, null, 2)}`);
+    // log.breakpoint();
+    return methodInfo;
 }
