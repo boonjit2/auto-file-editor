@@ -260,7 +260,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
 
 }
 
-
+// main
 module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, outputFile) {
 
     let results = [];
@@ -271,6 +271,9 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
     // get all lines to array
     let allRestResourceLines = file.readFileToArrayOfLines(targetRestResourceFile);
+    log.out(`allRestResourceLines=${stringify(allRestResourceLines, null, 2)}`);
+    log.breakpoint();
+
     // find starting index
     let startIndex = 0;
     for (let i = 0; i < allRestResourceLines.length; i++) {
