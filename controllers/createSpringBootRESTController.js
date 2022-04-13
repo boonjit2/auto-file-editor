@@ -183,10 +183,12 @@ public class ${controllerNameUpperCase}Controller {
     // log.out(`declarationTexts=${stringify(declarationTexts, null, 2)}`);
 
     let switchyardMethodInfoList = switchyard.getSwithyardServiceAnnotationInfo(declarationTexts);
-    log.out(`switchyardMethodInfoList=${stringify(switchyardMethodInfoList, null, 2)}`);
+    // log.out(`switchyardMethodInfoList=${stringify(switchyardMethodInfoList, null, 2)}`);
 
     // TODO: extract method lines from switchyardInterfaceImplementationFile
     let methodImplementationLines = file.readFileToArrayOfLines(switchyardInterfaceImplementationFile);
+    //
+    // append .bodyLines = [...] to each of switchyardMethodInfoList
 
 
 

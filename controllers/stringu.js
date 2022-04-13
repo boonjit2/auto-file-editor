@@ -329,3 +329,35 @@ module.exports.getJavaMethodInfo = function (stringLine) {
     // log.breakpoint();
     return methodInfo;
 }
+
+
+/**
+ * convert: [
+                  {
+                    "type": "NextStepListRequest",
+                    "name": "request"
+                  },
+                  {
+                    "type": "type2",
+                    "name": "name2"
+                  },
+                  ...
+
+                ]
+ * to : "NextStepListRequest request, type2 name2,..."
+ * 
+ */
+module.exports.parameterNameTypeToString = function (parameters) {
+    // let result = "ATEError: _parameterNameTypeToString unable to convert parameters";
+    let result = '';
+    for (let parameter of parameters) {
+        result += `${parameter.type} ${parameter.name},`
+    }
+
+    // replace trailing ,
+    if (result !== '') {
+        result = result.replace(/,$/gm, '');
+    }
+
+    return result;
+}
