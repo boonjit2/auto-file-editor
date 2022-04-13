@@ -41,7 +41,7 @@ module.exports =
 
         ],
         "selected": [
-
+            {} // heading
             // inspectTargetSwitchyardProject
             //
             // {
@@ -61,7 +61,8 @@ module.exports =
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
             //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_certificate.JSON"
             // }
-            // {
+            //
+            // , { // pre_pr
             //     "controller": "inspectTargetSwitchyardProject",
             //     "targetPath": "D:/myNetworkAppSwitchYard/planning/pre-pr",
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
@@ -93,6 +94,13 @@ module.exports =
             //     "targetPath": "D:/myNetworkAppSpringBoot/certificate",
             //     "projectNameUppercase": "Certificate"
             // }
+            , {
+                "controller": "createSpringBootProject",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+                "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+                "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr",
+                "projectNameUppercase": "PrePR"
+            }
             //
             //  createSpringBootRESTController
             // {
@@ -113,9 +121,15 @@ module.exports =
             //     "switchyardInterfaceImplementationFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceInterfaceBean.java",
             //     "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
             // }
+            , {
+                "controller": "createSpringBootRESTController",
+                "switchyardInterfaceDeclarationFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRestResource.java",
+                "switchyardInterfaceImplementationFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRoute.java",
+                "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
+            }
             //
             // createSpringBootExternalService
-            {
+            , {
                 "controller": "createSpringBootExternalService",
                 "switchyardXmlInfoFile": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON",
                 "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr"
@@ -141,6 +155,12 @@ module.exports =
             //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_certificate.JSON",
             // }
+            , {
+                "controller": "createRequestExample",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRestResource.java",
+                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_pre_pr.JSON",
+            }
         ]
     }
 
