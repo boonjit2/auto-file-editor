@@ -141,6 +141,24 @@ function _getSwithyardServiceAnnotationInfo(allLines) {
             else if (line.match(/@POST/gm)) {
                 result.httpMethod = "POST";
             }
+            else if (line.match(/@PUT/gm)) {
+                result.httpMethod = "PUT";
+            }
+            else if (line.match(/@PATCH/gm)) {
+                result.httpMethod = "PATCH";
+            }
+            else if (line.match(/@DELETE/gm)) {
+                result.httpMethod = "DELETE";
+            }
+            else if (line.match(/@CONNECT/gm)) {
+                result.httpMethod = "CONNECT";
+            }
+            else if (line.match(/@OPTIONS/gm)) {
+                result.httpMethod = "OPTIONS";
+            }
+            else if (line.match(/@TRACE/gm)) {
+                result.httpMethod = "TRACE";
+            }
             else if (line.match(/@Path/gm)) {
                 result.path = _getValueInsideDoubleQuote(line);
             }
@@ -176,7 +194,7 @@ function _getSwitchyardInterfaceInfo(allLines) {
     result.firstPath = _getValueInsideDoubleQuote(allLines[firstPathIndex]);
 
     // get all "lines of methods"
-    result.serviceAnnotationInfo = _getSwithyardServiceAnnotationInfo(allLines);
+    result.serviceAnnotationInfoList = _getSwithyardServiceAnnotationInfo(allLines);
 
 
     return result;
@@ -201,6 +219,7 @@ function _getSwitchyardXmlInfo(xmlFile, switchyardProjectInfoFile) {
                 if (element2.name === 'sca:composite') {
                     for (let element3 of element2.elements) {
                         reference.name = null;
+                        reference.isExternalService = false;
                         if (element3.name === 'sca:service') {
                             reference.name = element3.attributes.name;
                             for (let element4 of element3.elements) {
@@ -233,6 +252,7 @@ function _getSwitchyardXmlInfo(xmlFile, switchyardProjectInfoFile) {
 
                                         if (element5.name === 'resteasy:address') {
                                             reference.address = element5.elements[0].text;
+                                            reference.isExternalService = true;
                                         }
 
                                     }

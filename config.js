@@ -26,12 +26,19 @@ module.exports =
                 "outputFile": "D:/myNetworkAppSpringBoot/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/controller/alarmGatewayController.java"
             },
             {
+                "controller": "createSpringBootExternalService",
+                "description": "convert Switchyard external service to Spring Boot services",
+                "switchyardXmlInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
+                "targetPath": "D:/myNetworkAppSpringBoot/centralizedb",
+            },
+            {
                 "controller": "createRequestExample",
                 "description": "generate request examples from the target switchyard project",
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
                 "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
                 "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
             },
+
         ],
         "selected": [
 
@@ -107,14 +114,21 @@ module.exports =
             //     "outputFile": "D:/myNetworkAppSpringBoot/certificate/src/main/java/th/co/ais/mynetwork/certificate/controller/CertificateController.java",
             // }
             //
+            // createSpringBootExternalService
+            {
+                "controller": "createSpringBootExternalService",
+                "switchyardXmlInfoFile": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON",
+                "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr"
+            }
+            //
             // createRequestExample
             //
-            , {
-                "controller": "createRequestExample",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
-                "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
-            }
+            // , {
+            //     "controller": "createRequestExample",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
+            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+            //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
+            // }
             // {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
