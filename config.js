@@ -94,13 +94,13 @@ module.exports =
             //     "targetPath": "D:/myNetworkAppSpringBoot/certificate",
             //     "projectNameUppercase": "Certificate"
             // }
-            , {
-                "controller": "createSpringBootProject",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-                "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-                "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr",
-                "projectNameUppercase": "PrePR"
-            }
+            // , { // pre_pr
+            //     "controller": "createSpringBootProject",
+            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+            //     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //     "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr",
+            //     "projectNameUppercase": "PrePR"
+            // }
             //
             //  createSpringBootRESTController
             // {

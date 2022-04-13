@@ -28,6 +28,9 @@ function _extractJavaClassHeader(javaSourceFile) {
 
 module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath, projectNameUppercase) {
 
+    let projectNameLowercase = projectNameUppercase.toLowerCase();
+    let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
+
     // error if targetPath not empty
     // if (file.isPathEmpty(targetPath) === false) {
     //     throw new Error(`targetPath ${targetPath} is not empty, please check and remove it before you continue`)
@@ -38,12 +41,18 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
         file.mkDir(targetPath);
     }
 
+    // delete some essential folder in targetPath before continue
+    let targetPathToCheck = path.join(targetPath, pathFragment1, projectNameLowercase);
+    if (file.isPathExist(targetPathToCheck) === true) {
+        log.out(`found existing and removing dir: ${targetPathToCheck}`)
+        file.deleteDirRecursive(targetPathToCheck);
+    }
+    // log.breakpoint();
+
     // copy template to target location
     file.copy(springBootTemplateFolder, targetPath)
 
     // rename new project files
-    let projectNameLowercase = projectNameUppercase.toLowerCase();
-    let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
     file.rename(path.join(targetPath, pathFragment1, 'project_name'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase));
     file.rename(path.join(targetPath, pathFragment1, projectNameLowercase, '/controller/ProjectNameController.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/controller/', (projectNameUppercase + 'Controller.java')));
     file.rename(path.join(targetPath, pathFragment1, projectNameLowercase, '/ProjectNameApplication.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/', (projectNameUppercase + 'Application.java')));

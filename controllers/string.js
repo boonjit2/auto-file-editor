@@ -68,6 +68,7 @@ module.exports.extractJavaMethod = function (allLines, headerPattern, maxExtract
     let extractedMethodLines = [];
 
     // log.out(`allLines=${stringify(allLines, null, 0)}`);
+    log.out(`extractJavaMethod: headerPattern=${headerPattern}`);
 
     if (allLines.length) {
         for (let index = 0; index < allLines.length; index++) {
@@ -106,6 +107,11 @@ module.exports.extractJavaMethod = function (allLines, headerPattern, maxExtract
 
             }
         }
+    }
+
+    // break on error
+    if (extractedMethodLines.length === 0) {
+        throw new Error(`Unable to extract method with header matching ${headerPattern}`);
     }
 
     return extractedMethodLines;

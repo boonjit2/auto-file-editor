@@ -182,3 +182,7 @@ module.exports.getAllMatches = function (filePath, pattern) {
 
     return matches;
 }
+
+module.exports.deleteDirRecursive = function (dirPath) {
+    return fs.rmSync(dirPath, { recursive: true, force: true });
+}
