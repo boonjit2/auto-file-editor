@@ -4,6 +4,7 @@ const log = require('./log');
 const replace = require('replace-in-file');
 const clone = require('clone');
 let stringify = require('json-stringify-safe');
+const string = require('./stringu');
 
 /** 
 example: from array of lines:
@@ -87,13 +88,13 @@ module.exports.getSwithyardServiceAnnotationInfo = function (allLines) {
                 result.httpMethod = "TRACE";
             }
             else if (line.match(/@Path/gm)) {
-                result.path = _getValueInsideDoubleQuote(line);
+                result.path = string.getValueInsideDoubleQuote(line);
             }
             else if (line.match(/@Produces/gm)) {
-                result.produce = _getValueInsideCurlyBrace(line);
+                result.produce = string.getValueInsideCurlyBrace(line);
             }
             else if (line.match(/@Consumes/gm)) {
-                result.consume = _getValueInsideCurlyBrace(line);
+                result.consume = string.getValueInsideCurlyBrace(line);
             }
             else if (line.match(/[ ]*public.*\(.*\);/gm)) {
                 result.methodInfo = string.getJavaMethodInfo(line);

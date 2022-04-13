@@ -11,6 +11,39 @@ module.exports.matchCount = function (original, pattern) {
     if (matches) { return matches.length } else { return 0; }
 }
 
+/**  get "xxx" from .*YYY("xxx").*;
+*/
+module.exports.getValueInsideDoubleQuote = function (stringLine) {
+    // log.out(`stringLine=${stringLine}`);
+    let matches = stringLine.match(/(?<=\").*?(?=\")/gm);
+    // log.out(`matches=${stringify(matches)}`);
+    if (matches) {
+        let value = matches[0];
+        return value;
+    }
+
+    return null;
+}
+
+// get "xxx" from .*YYY({ xxx }).*;
+module.exports.getValueInsideCurlyBrace = function (stringLine) {
+    // log.out(`stringLine=${stringLine}`);
+    let matches = stringLine.match(/(?<=\{).*?(?=\})/gm);
+    // log.out(`matches=${stringify(matches)}`);
+    if (matches) {
+        let value = matches[0].trim();
+        // log.out(`values=${stringify(values)}`);
+        // remove "
+        if (value.match(/\"/gm)) {
+            value = value.replace(/\"/gm, '')
+        }
+
+        return value;
+    }
+
+    return null;
+}
+
 /** 
  split strings into array of tokens
  using regex pattern as a delimiter

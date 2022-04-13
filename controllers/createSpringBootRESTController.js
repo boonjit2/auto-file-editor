@@ -2,7 +2,7 @@ const file = require('./file');
 const log = require('./log');
 const stringify = require('json-stringify-safe');
 const path = require('path');
-const string = require('./string');
+const string = require('./stringu');
 const switchyard = require('./switchyard');
 
 let logLine = '';

@@ -2,7 +2,7 @@ const file = require('./file');
 const log = require('./log');
 const clone = require('clone');
 const path = require('path');
-const string = require('./string');
+const string = require('./stringu');
 const stringify = require('json-stringify-safe');
 const { format } = require('path');
 

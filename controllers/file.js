@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 var path = require('path');
 const log = require('./log');
 const replace = require('replace-in-file');
-const string = require('./string');
+const string = require('./stringu');
 var convert = require('xml-js');
 
 const { stringify } = require('querystring');
