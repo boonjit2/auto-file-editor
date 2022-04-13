@@ -182,87 +182,59 @@ public class ${controllerNameUpperCase}Controller {
     let declarationTexts = string.tokenize(declarationText, /\n/gm, null);
     // log.out(`declarationTexts=${stringify(declarationTexts, null, 2)}`);
 
-    let switchyardMethodInfoList = switchyard.getSwithyardServiceAnnotationInfo(declarationTexts);
-    // log.out(`switchyardMethodInfoList=${stringify(switchyardMethodInfoList, null, 2)}`);
+    let switchyardServiceInfoList = switchyard.getSwithyardServiceAnnotationInfo(declarationTexts);
+    // log.out(`switchyardServiceInfoList=${stringify(switchyardServiceInfoList, null, 2)}`);
 
-    // TODO: extract method lines from switchyardInterfaceImplementationFile
+    // read from switchyardInterfaceImplementationFile
     let methodImplementationLines = file.readFileToArrayOfLines(switchyardInterfaceImplementationFile);
-    //
-    // append .bodyLines = [...] to each of switchyardMethodInfoList
+
+    // TODO: get import.* lines from methodImplementationLines
+    // and insert it into the controller
+
+    // append .implementLines = [...] to each of switchyardServiceInfoList
+    for (let serviceInfo of switchyardServiceInfoList) {
+        // create header pattern
+        let methodHeaderPatternString = '';
+        if (serviceInfo.methodInfo.parameters.length === 0) {
+            // method with no parameters
+            methodHeaderPatternString = `${serviceInfo.methodInfo.returnType}[ ]*${serviceInfo.methodInfo.methodName}[ ]*\\\([ ]*\\\)[ ]*{`;
+        } else {
+            // method with parameters
+
+            // create parameters pattern string
+            let parameterPatternString = '[ ]*';
+            for (let member of serviceInfo.methodInfo.parameters) {
+                parameterPatternString += `${member.type}[ ]*${member.name}[ ]*`;
+            }
+
+            methodHeaderPatternString = `${serviceInfo.methodInfo.returnType}[ ]*${serviceInfo.methodInfo.methodName}[ ]*\\\(${parameterPatternString}\\\)[ ]*{`;
+        }
+
+        let methodHeaderPattern = new RegExp(methodHeaderPatternString, "gm");
+
+        serviceInfo.methodInfo.implementLines = string.extractJavaMethod(methodImplementationLines, methodHeaderPattern, 100000);
+
+        // remake heading line
+        serviceInfo.methodInfo.implementLines[0] = `\t${string.arrayToString(serviceInfo.methodInfo.modifiers)} ${serviceInfo.methodInfo.returnType} ${serviceInfo.methodInfo.methodName}(@RequestBody ${string.parameterNameTypeToString(serviceInfo.methodInfo.parameters)}) {\r`;
+
+    }
+
+    // log.out(`switchyardServiceInfoList=${stringify(switchyardServiceInfoList, null, 2)}`);
+
+    // add each .implementLines to text
+    for (let serviceInfo of switchyardServiceInfoList) {
+        for (let line of serviceInfo.methodInfo.implementLines) {
+            text += `${line}\n`;
+        }
+    }
 
 
-
-    log.breakpoint();
-
-
-    // for (let declarationInfo of switchyardDeclarationInfoList) {
-
-    //     // create pattern strings
-    //     let patternString = `${declarationInfo.methodName}[ ]?\\\(`;
-    //     if (declarationInfo.requestClassName) {
-    //         patternString += `${declarationInfo.requestClassName} .*\\\)[ ]?{`;
-    //     } else {
-    //         patternString += `.*\\\)[ ]?{`;
-    //     }
-
-    //     // create method search pattern
-    //     pattern = new RegExp(`${patternString}`, "gm");
-    //     // log.out(`pattern=${pattern}`);
-
-    //     // find matching method declaration
-    //     let extractedMethodLines = string.extractJavaMethod(implementationTexts, pattern, 100000);
-    //     log.out(`extractedMethodLines=${stringify(extractedMethodLines, null, 2)}`);
-
-    //     // insert @RequestBody annotation
-    //     //                       V          V
-    //     // ex: public methodName(@RequestBody requestClassName variable){
-
-    //     let beforeBrackets = extractedMethodLines[0].match(/.*\(/gm);
-    //     // public methodName(
-    //     // log.out(`beforeBrackets=${stringify(beforeBrackets, null, 2)}`);
-
-    //     let afterBrackets = extractedMethodLines[0].match(/\(.*/gm);
-    //     // (requestClassName variable){
-    //     afterBrackets[0] = afterBrackets[0].replace('(', '');
-    //     // requestClassName variable){
-    //     // log.out(`afterBrackets=${stringify(afterBrackets, null, 2)}`);
-
-    //     // sum it up
-    //     extractedMethodLines[0] = `${beforeBrackets}@RequestBody ${afterBrackets}`;
-    //     // fix (@RequestBody) to ()
-    //     extractedMethodLines[0] = extractedMethodLines[0].replace(/\([ ]*@RequestBody[ ]*\)/, '()');
-    //     log.out(`extractedMethodLines[0]=${extractedMethodLines[0]}`);
-
-    //     // throw new Error('Breakpoint');
-
-    //     let httpMethod = declarationInfo.httpMethod;
-    //     let MethodPath = declarationInfo.path;
-    //     // log.out(`MethodPath=${MethodPath}`);
-
-    //     text += `\t@${httpMethod}Mapping(path = "${MethodPath}", produces = "application/json")\n`;
-
-    //     extractedMethodLines.forEach(element => {
-    //         text += `${element}\n`;
-    //     });
-    //     text += `\n`;
-
-    //     // if (matches) {
-    //     //     // reformat text again
-    //     //     let text2 = '';
-    //     //     text2 = string.replaceall('@Override', '', matches[0]);
-    //     //     text2 = string.replaceall('{{newline}}', '\n', text2);
-
-    //     //     text += `${text2}\n`;
-    //     // } else {
-    //     //     text += `${method} { // Error: ATE can't find this method implementation }\n`;
-    //     // }
-
-    // }
-
+    // class footer
     text += `\n}`
+
     file.write(outputFile, text);
     log.out(`${logLine}`);
-    log.out(`declarationInfo.length=${switchyardDeclarationInfoList.length}`);
+    log.out(`switchyardServiceInfoList.length=${switchyardServiceInfoList.length}`);
 
     return `${logLine}\ncontrollers.createSpringBootRESTController.js: created REST controller at: ${outputFile}\n methodCount=${methodCount}`;
 

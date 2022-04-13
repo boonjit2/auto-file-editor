@@ -53,7 +53,6 @@ function _parameterNameTypeToString(parameters) {
     return result;
 }
 
-
 // main export
 module.exports = function (switchyardXmlInfoFile, targetPath) {
     let switchyardXmlInfo = file.readFileToJson(switchyardXmlInfoFile);

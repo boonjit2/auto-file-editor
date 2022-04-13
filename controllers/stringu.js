@@ -105,7 +105,7 @@ module.exports.extractJavaMethod = function (allLines, headerPattern, maxExtract
     let extractedMethodLines = [];
 
     // log.out(`allLines=${stringify(allLines, null, 0)}`);
-    log.out(`extractJavaMethod: headerPattern=${headerPattern}`);
+    // log.out(`extractJavaMethod: headerPattern=${headerPattern}`);
 
     if (allLines.length) {
         for (let index = 0; index < allLines.length; index++) {
@@ -358,6 +358,24 @@ module.exports.parameterNameTypeToString = function (parameters) {
     if (result !== '') {
         result = result.replace(/,$/gm, '');
     }
+
+    return result;
+}
+
+
+/**
+ * convert: [ "1","2","3"... ]
+ * to : "1 2 3 ..."
+ * 
+ */
+module.exports.arrayToString = function (lines) {
+    let result = '';
+    if (lines.length > 0) {
+        lines.forEach(element => {
+            result += `${element} `
+        })
+    }
+    result = result.trim();
 
     return result;
 }
