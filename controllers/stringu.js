@@ -6,6 +6,10 @@ const clone = require('clone');
 let stringify = require('json-stringify-safe');
 
 
+module.exports.capitalizeFirstLetter = function (st) {
+    return st.charAt(0).toUpperCase() + st.slice(1);
+}
+
 module.exports.matchCount = function (original, pattern) {
     let matches = original.match(pattern);
     if (matches) { return matches.length } else { return 0; }
