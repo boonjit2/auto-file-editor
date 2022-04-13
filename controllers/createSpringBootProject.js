@@ -3,6 +3,7 @@ const log = require('./log');
 const stringify = require('json-stringify-safe');
 const path = require('path');
 const string = require('./stringu');
+const switchyard = require('./switchyard');
 
 function _extractJavaClassHeader(javaSourceFile) {
     let JavaClassHeader = "";
@@ -147,7 +148,7 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
             if (contextPath === null) {
                 throw new Error(`Unable to find contextPath from ${member.fullPath}`);
             }
-            contextPath = '/' + contextPath;
+            contextPath = path.join('/', contextPath).posix(); // original context path has no / at the beginning
 
             // replace contextPath in the template file
             let pathFragment2 = '/src/main/webapp/WEB-INF'

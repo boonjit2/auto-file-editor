@@ -4,6 +4,7 @@ const log = require('./log');
 const stringify = require('json-stringify-safe');
 const path = require('path');
 const string = require('./stringu');
+const switchyard = require('./switchyard');
 
 // try to find the http method from requestMethodName
 // example from:
@@ -271,71 +272,147 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
 
     // get all lines to array
     let allRestResourceLines = file.readFileToArrayOfLines(targetRestResourceFile);
-    log.out(`allRestResourceLines=${stringify(allRestResourceLines, null, 2)}`);
+    // log.out(`allRestResourceLines=${stringify(allRestResourceLines, null, 2)}`);
+
+    let serviceInfoList = switchyard.getSwithyardServiceAnnotationInfo(allRestResourceLines);
+    log.out(`serviceInfoList=${stringify(serviceInfoList, null, 2)}`);
+
+    // iterate requestInfoList
+    /*
+    from: serviceInfo=[
+  {
+    "httpMethod": "GET",
+    "path": "/version",
+    "produce": "application/json",
+    "methodInfo": {
+      "modifiers": [
+        "public"
+      ],
+      "returnType": "String",
+      "methodName": "getVersion",
+      "parameters": []
+    }
+  },
+  {
+    "httpMethod": "POST",
+    "path": "/getCurrency",
+    "produce": "MediaType.APPLICATION_JSON",
+    "consume": "MediaType.APPLICATION_JSON",
+    "methodInfo": {
+      "modifiers": [
+        "public"
+      ],
+      "returnType": "CurrencyMasterResponse",
+      "methodName": "getCurrency",
+      "parameters": [
+        {
+          "type": "CommonRequest",
+          "name": "request"
+        }
+      ]
+    }
+  },
+    
+    to: 
+    requestExamples=[
+        {
+            header: "POST /contextpath/url",
+            body: "{...}"
+        }
+
+
+    ]
+    
+    
+    */
+    for (let serviceInfo of serviceInfoList) {
+
+        // have parameters
+        if (serviceInfo.methodInfo.parameters.length > 0) {
+            // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
+            let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
+            // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
+
+
+            if (javaFileInfo) {
+                let privateVariableList = _getPrivateVariableList(javaFileInfo);
+                // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
+
+                requestInfo.requestBodyExample = {};
+                for (let privateVariable of privateVariableList) {
+                    requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
+                }
+            } else {
+                // javaFileInfo===null means it might be a primitive type , such as List<string>
+                requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
+            }
+        }
+    }
+
     log.breakpoint();
 
     // find starting index
-    let startIndex = 0;
-    for (let i = 0; i < allRestResourceLines.length; i++) {
-        // the first '{' is the start
-        if (allRestResourceLines[i].match(/{/gm)) {
-            startIndex = i;
-            break;
-        }
-    }
-    // log.out(`startIndex=${startIndex}`);
+    // let startIndex = 0;
+    // for (let i = 0; i < allRestResourceLines.length; i++) {
+    //     // the first '{' is the start
+    //     if (allRestResourceLines[i].match(/{/gm)) {
+    //         startIndex = i;
+    //         break;
+    //     }
+    // }
+    // // log.out(`startIndex=${startIndex}`);
 
-    // extract lines
-    let methodDeclarations = [];
-    for (let i2 = startIndex + 1; i2 < allRestResourceLines.length; i2++) {
-        let pattern = /(.*);/gm
-        let matches = allRestResourceLines[i2].match(pattern);
-        if (matches) {
-            methodDeclarations.push(allRestResourceLines[i2]);
-        }
-    }
+    // // extract lines
+    // let methodDeclarations = [];
+    // for (let i2 = startIndex + 1; i2 < allRestResourceLines.length; i2++) {
+    //     let pattern = /(.*);/gm
+    //     let matches = allRestResourceLines[i2].match(pattern);
+    //     if (matches) {
+    //         methodDeclarations.push(allRestResourceLines[i2]);
+    //     }
+    // }
 
     // log.out(`methodDeclarations=${stringify(methodDeclarations, null, 2)}`);
 
-    let requestInfoList = [];
+    // let requestInfoList = [];
 
-    methodDeclarations.forEach(element => {
-        // pattern2: xxx();
-        let pattern2 = /\([ ]?\);/gm;
-        // pattern1: xxx(yyy zzz);
-        let pattern1 = /\(.*\);/gm;
-        let tokens = string.tokenize(element, /[\(\) ;]+/gm, null);
+    // methodDeclarations.forEach(element => {
+    //     // pattern2: xxx();
+    //     let pattern2 = /\([ ]?\);/gm;
+    //     // pattern1: xxx(yyy zzz);
+    //     let pattern1 = /\(.*\);/gm;
+    //     let tokens = string.tokenize(element, /[\(\) ;]+/gm, null);
 
-        if (element.match(pattern2)) {
-            // pattern2: xxx();
-            let matches2 = element.match(pattern2);
-            // log.out(`matches2=${stringify(matches2, null, 2)}`);
+    //     if (element.match(pattern2)) {
+    //         // pattern2: xxx();
+    //         let matches2 = element.match(pattern2);
+    //         // log.out(`matches2=${stringify(matches2, null, 2)}`);
 
-            let requestInfo = {
-                requestURL: null,
-                requestVariableName: null,
-                requestClassName: null,
-                requestMethodName: tokens[tokens.length - 1]
-            }
-            requestInfoList.push(requestInfo);
+    //         let requestInfo = {
+    //             requestURL: null,
+    //             requestVariableName: null,
+    //             requestClassName: null,
+    //             requestMethodName: tokens[tokens.length - 1]
+    //         }
+    //         requestInfoList.push(requestInfo);
 
 
-        } else if (element.match(pattern1)) {
-            // pattern1: xxx(yyy zzz);
-            let matches1 = element.match(pattern1);
-            // log.out(`matches1=${stringify(matches1, null, 2)}`);
+    //     } else if (element.match(pattern1)) {
+    //         // pattern1: xxx(yyy zzz);
+    //         let matches1 = element.match(pattern1);
+    //         // log.out(`matches1=${stringify(matches1, null, 2)}`);
 
-            let requestInfo = {
-                requestURL: null,
-                requestVariableName: tokens[tokens.length - 1],
-                requestClassName: tokens[tokens.length - 2],
-                requestMethodName: tokens[tokens.length - 3]
-            }
+    //         let requestInfo = {
+    //             requestURL: null,
+    //             requestVariableName: tokens[tokens.length - 1],
+    //             requestClassName: tokens[tokens.length - 2],
+    //             requestMethodName: tokens[tokens.length - 3]
+    //         }
 
-            requestInfoList.push(requestInfo);
-        }
+    //         requestInfoList.push(requestInfo);
+    //     }
 
-    });
+    // });
 
 
     // iterate requestInfoList
