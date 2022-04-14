@@ -148,7 +148,7 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
             if (contextPath === null) {
                 throw new Error(`Unable to find contextPath from ${member.fullPath}`);
             }
-            contextPath = path.join('/', contextPath).posix(); // original context path has no / at the beginning
+            contextPath = path.posix.join('/', contextPath); // original context path has no / at the beginning
 
             // replace contextPath in the template file
             let pathFragment2 = '/src/main/webapp/WEB-INF'

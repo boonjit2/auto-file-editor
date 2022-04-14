@@ -22,7 +22,7 @@ for (let selected of config.job.selected) {
     } else if (selected.controller === "createRequestExample") {
         result += createRequestExample(
             selected.switchyardProjectInfoFile,
-            selected.targetRestResourceFile,
+            selected.sourceRestResourceFile,
             selected.outputFile);
     } else if (selected.controller === "createSpringBootRESTController") {
         result += createSpringBootRESTController(

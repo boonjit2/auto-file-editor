@@ -35,7 +35,7 @@ module.exports =
                 "controller": "createRequestExample",
                 "description": "generate request examples from the target switchyard project",
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+                "sourceRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
                 "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests.JSON",
             },
 
@@ -140,25 +140,25 @@ module.exports =
             // , {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
-            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
+            //     "sourceRestResourceFile": "D:/myNetworkAppSwitchYard/centralizedb/src/main/java/th/co/ais/mynetwork/centralizedb/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_centralizedb.JSON",
             // }
             // {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
-            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
+            //     "sourceRestResourceFile": "D:/myNetworkAppSwitchYard/alarmgateway/src/main/java/th/co/ais/mynetwork/alarmgateway/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_alarmGateway.JSON",
             // }
             // {
             //     "controller": "createRequestExample",
             //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_certificate.JSON",
-            //     "targetRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
+            //     "sourceRestResourceFile": "D:/myNetworkAppSwitchYard/certificate/src/main/java/th/co/ais/mynetwork/certificate/ListServiceRestResource.java",
             //     "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_certificate.JSON",
             // }
             , {
                 "controller": "createRequestExample",
                 "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-                "targetRestResourceFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRestResource.java",
+                "sourceRestResourceFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRestResource.java",
                 "outputFile": "D:/auto-file-editor/logs/ListServiceRestResourceRequests_pre_pr.JSON",
             }
         ]

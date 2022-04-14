@@ -16,12 +16,12 @@ const switchyard = require('./switchyard');
 //
 //  to:
 //      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
-function _getRequestURL(contextPath, requestMethodName, targetRestResourceFile) {
+function _getRequestURL(contextPath, requestMethodName, sourceRestResourceFile) {
     let requestURL = null;
     let httpMethod = 'UNKNOWN'
     let requestPath = '/UNKNOWN'
     let hostname = '{{host}}';
-    let allLines = file.readFileToArrayOfLines(targetRestResourceFile);
+    let allLines = file.readFileToArrayOfLines(sourceRestResourceFile);
     // log.out(`allLines=${stringify(allLines, null, 2)}`);
     // throw new Error('Breakpoint');
 
@@ -88,6 +88,8 @@ function _getSwitchyardContextPath(switchyardProjectInfoFile) {
 }
 
 function _getJavaFileInfo(javaFileName, switchyardProjectInfoFile) {
+    // log.out(`javaFileName=${javaFileName},switchyardProjectInfoFile=${switchyardProjectInfoFile}`);
+
     // parse
     let switchyardProjectInfo = file.readFileToJson(switchyardProjectInfoFile);
 
@@ -161,7 +163,7 @@ function _getPrivateVariableList(javaFileInfo) {
     for (let k = startIndex; k < endIndex; k++) {
         privateVariableLines.push(allLines[k]);
     }
-    // log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
+    log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
     // log.breakpoint();
 
     // remove lines with comments , ex: "// private String xxx"
@@ -262,7 +264,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
 }
 
 // main
-module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, outputFile) {
+module.exports = function (switchyardProjectInfoFile, sourceRestResourceFile, outputFile) {
 
     let results = [];
     let result;
@@ -271,11 +273,11 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     let contextPath = _getSwitchyardContextPath(switchyardProjectInfoFile);
 
     // get all lines to array
-    let allRestResourceLines = file.readFileToArrayOfLines(targetRestResourceFile);
+    let allRestResourceLines = file.readFileToArrayOfLines(sourceRestResourceFile);
     // log.out(`allRestResourceLines=${stringify(allRestResourceLines, null, 2)}`);
 
     let serviceInfoList = switchyard.getSwithyardServiceAnnotationInfo(allRestResourceLines);
-    log.out(`serviceInfoList=${stringify(serviceInfoList, null, 2)}`);
+    // log.out(`serviceInfoList=${stringify(serviceInfoList, null, 2)}`);
 
     // iterate requestInfoList
     /*
@@ -316,7 +318,7 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     to: 
     requestExamples=[
         {
-            header: "POST /contextpath/url",
+            header: "POST {{host}}/contextpath/url",
             body: "{...}"
         }
 
@@ -325,30 +327,46 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     
     
     */
+    let requestExamples = [];
     for (let serviceInfo of serviceInfoList) {
+        let requestExample = {};
+
+        let tempPath = path.posix.join(contextPath, serviceInfo.path);
+        requestExample.header = `${serviceInfo.httpMethod} {{host}}${tempPath}`;
+        requestExample.body = null;
 
         // have parameters
         if (serviceInfo.methodInfo.parameters.length > 0) {
-            // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
-            let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
+            // log.out(`serviceInfo=${stringify(serviceInfo, null, 2)}`);
+            let javaFileInfo = _getJavaFileInfo(`${serviceInfo.methodInfo.parameters[0].type}.java`, switchyardProjectInfoFile);
             // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
+            // log.breakpoint();
 
 
+            // found the class data inside this project
             if (javaFileInfo) {
                 let privateVariableList = _getPrivateVariableList(javaFileInfo);
                 // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
 
-                requestInfo.requestBodyExample = {};
+                requestExample.body = {};
                 for (let privateVariable of privateVariableList) {
-                    requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
+                    requestExample.body[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 20, switchyardProjectInfoFile);
                 }
             } else {
                 // javaFileInfo===null means it might be a primitive type , such as List<string>
-                requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
+                // or some classes which was imported from outside
+                requestExample.body = _resolveJavaVariableToJson(serviceInfo.methodInfo.parameters[0].type, 20, switchyardProjectInfoFile);
             }
+        } else {
+
         }
+
+        requestExamples.push(requestExample);
+
+
     }
 
+    log.out(`requestExamples=${stringify(requestExamples, null, 2)}`);
     log.breakpoint();
 
     // find starting index
@@ -415,45 +433,45 @@ module.exports = function (switchyardProjectInfoFile, targetRestResourceFile, ou
     // });
 
 
-    // iterate requestInfoList
-    for (let requestInfo of requestInfoList) {
+    // // iterate requestInfoList
+    // for (let requestInfo of requestInfoList) {
 
-        if (requestInfo.requestClassName) {
-            // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
-            let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
-            // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
-
-
-            if (javaFileInfo) {
-                let privateVariableList = _getPrivateVariableList(javaFileInfo);
-                // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
-
-                requestInfo.requestBodyExample = {};
-                for (let privateVariable of privateVariableList) {
-                    requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
-                }
-            } else {
-                // javaFileInfo===null means it might be a primitive type , such as List<string>
-                requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
-            }
-        }
+    //     if (requestInfo.requestClassName) {
+    //         // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
+    //         let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
+    //         // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
 
 
+    //         if (javaFileInfo) {
+    //             let privateVariableList = _getPrivateVariableList(javaFileInfo);
+    //             // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
+
+    //             requestInfo.requestBodyExample = {};
+    //             for (let privateVariable of privateVariableList) {
+    //                 requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
+    //             }
+    //         } else {
+    //             // javaFileInfo===null means it might be a primitive type , such as List<string>
+    //             requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
+    //         }
+    //     }
 
 
-        // try to find the http method from requestMethodName
-        // example from:
-        //         @POST
-        //         ...
-        //         @Path("getSiteCodeSiteName")
-        //         ...
-        //         /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
-        //
-        //  to:
-        //      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
-        requestInfo.requestURL = _getRequestURL(contextPath, requestInfo.requestMethodName, targetRestResourceFile);
 
-    }
+
+    //     // try to find the http method from requestMethodName
+    //     // example from:
+    //     //         @POST
+    //     //         ...
+    //     //         @Path("getSiteCodeSiteName")
+    //     //         ...
+    //     //         /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
+    //     //
+    //     //  to:
+    //     //      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
+    //     requestInfo.requestURL = _getRequestURL(contextPath, requestInfo.requestMethodName, sourceRestResourceFile);
+
+    // }
 
     // log.out(`requestInfoList=${stringify(requestInfo, null, 2)}`);
     // log.breakpoint();
