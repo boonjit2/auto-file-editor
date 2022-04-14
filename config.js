@@ -62,12 +62,12 @@ module.exports =
             //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_certificate.JSON"
             // }
             //
-            // , { // pre_pr
-            //     "controller": "inspectTargetSwitchyardProject",
-            //     "targetPath": "D:/myNetworkAppSwitchYard/planning/pre-pr",
-            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-            //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON"
-            // }
+            , { // pre_pr
+                "controller": "inspectTargetSwitchyardProject",
+                "targetPath": "D:/myNetworkAppSwitchYard/planning/pre-pr",
+                "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+                "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON"
+            }
             //
             // createSpringBootProject
             //
@@ -94,13 +94,13 @@ module.exports =
             //     "targetPath": "D:/myNetworkAppSpringBoot/certificate",
             //     "projectNameUppercase": "Certificate"
             // }
-            // , { // pre_pr
-            //     "controller": "createSpringBootProject",
-            //     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-            //     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-            //     "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr",
-            //     "projectNameUppercase": "PrePR"
-            // }
+            , { // pre_pr
+                "controller": "createSpringBootProject",
+                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+                "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+                "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr",
+                "projectNameUppercase": "PrePR"
+            }
             //
             //  createSpringBootRESTController
             // {
@@ -129,11 +129,11 @@ module.exports =
             // }
             //
             // createSpringBootExternalService
-            // , {
-            //     "controller": "createSpringBootExternalService",
-            //     "switchyardXmlInfoFile": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON",
-            //     "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr"
-            // }
+            , { // pre_pr
+                "controller": "createSpringBootExternalService",
+                "switchyardXmlInfoFile": "D:/auto-file-editor/logs/switchyardXmlFileInfo_pre_pr.JSON",
+                "targetPath": "D:/myNetworkAppSpringBoot/planning/pre_pr"
+            }
             //
             // createRequestExample
             //

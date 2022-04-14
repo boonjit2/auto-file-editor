@@ -182,7 +182,7 @@ function _getPrivateVariableList(javaFileInfo) {
     for (let privateVariableLine of privateVariableLines) {
         // break to small tokens = [ ["private","xx","yy"], ["private","aa","bb"] ...]
         let tokens = string.tokenize(privateVariableLine, /[\(\) ]+/gm, { removeEmptyMembers: true });
-        log.out(`tokens=${stringify(tokens, null, 2)}`);
+        // log.out(`tokens=${stringify(tokens, null, 2)}`);
 
         // if (tokens.length === 3) {
         //     let name = tokens[tokens.length - 1].trim();
