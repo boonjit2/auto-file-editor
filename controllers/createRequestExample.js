@@ -161,9 +161,12 @@ function _getPrivateVariableList(javaFileInfo) {
     // try to capture all private variables to the list = ["private xx yy", "private aa bb" ...]
     let privateVariableLines = [];
     for (let k = startIndex; k < endIndex; k++) {
-        privateVariableLines.push(allLines[k]);
+        // exclude empty lines
+        if (allLines[k].trim() !== '') {
+            privateVariableLines.push(allLines[k]);
+        }
     }
-    log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
+    // log.out(`privateVariableLines=${stringify(privateVariableLines, null, 2)}`);
     // log.breakpoint();
 
     // remove lines with comments , ex: "// private String xxx"
@@ -178,13 +181,46 @@ function _getPrivateVariableList(javaFileInfo) {
     let privateVariables = [];
     for (let privateVariableLine of privateVariableLines) {
         // break to small tokens = [ ["private","xx","yy"], ["private","aa","bb"] ...]
-        let tokens = string.tokenize(privateVariableLine, /[\(\) ;]+/gm, null);
-        // log.out(`tokens=${stringify(tokens, null, 2)}`);
-        if (tokens.length >= 2) {
-            let name = tokens[tokens.length - 1].trim();
-            let type = tokens[tokens.length - 2].trim();
-            privateVariables.push({ name, type });
+        let tokens = string.tokenize(privateVariableLine, /[\(\) ]+/gm, { removeEmptyMembers: true });
+        log.out(`tokens=${stringify(tokens, null, 2)}`);
+
+        // if (tokens.length === 3) {
+        //     let name = tokens[tokens.length - 1].trim();
+        //     let type = tokens[tokens.length - 2].trim();
+        //     privateVariables.push({ name, type });
+        // } else {
+        //     throw new Error(`Unable to parse tokens=${stringify(tokens)}`);
+        // }
+        //                          V endIndex    V
+        // format: [modifiers] Type [variableName];(End)
+        //
+        //                          V endIndex     V
+        // format: [modifiers] Type [variableName] = [value or whatever.*];(End)
+        //
+        // Find the ending ("=" or last index of the array which contains ';')
+        // if we can't find it , throw error
+        let endIndex = -1;
+        for (let token of tokens) {
+            if (token.match(/=/gm)) {
+                endIndex = tokens.indexOf(token) - 1;
+                break;
+            }
+            if (token.match(/;/gm)) {
+                endIndex = tokens.indexOf(token);
+
+                // remove ';' from token
+                token = token.replace(/;/gm, '');
+                break;
+            }
         }
+
+        if (endIndex === -1) {
+            throw new Error(`unable to find an endIndex of tokens=${stringify(tokens)}`);
+        }
+
+        let name = tokens[endIndex].trim();
+        let type = tokens[endIndex - 1].trim();
+        privateVariables.push({ name, type });
     }
 
 
@@ -258,7 +294,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
 
         // log.out(`case:9,results=${stringify({ ATEError: 'cannot resolve this type' })}`);
         // not found the class data
-        return { ATEError: 'cannot resolve this type' };
+        return { ATEError: `cannot resolve type=${type}` };
     }
 
 }
@@ -366,120 +402,11 @@ module.exports = function (switchyardProjectInfoFile, sourceRestResourceFile, ou
 
     }
 
-    log.out(`requestExamples=${stringify(requestExamples, null, 2)}`);
-    log.breakpoint();
-
-    // find starting index
-    // let startIndex = 0;
-    // for (let i = 0; i < allRestResourceLines.length; i++) {
-    //     // the first '{' is the start
-    //     if (allRestResourceLines[i].match(/{/gm)) {
-    //         startIndex = i;
-    //         break;
-    //     }
-    // }
-    // // log.out(`startIndex=${startIndex}`);
-
-    // // extract lines
-    // let methodDeclarations = [];
-    // for (let i2 = startIndex + 1; i2 < allRestResourceLines.length; i2++) {
-    //     let pattern = /(.*);/gm
-    //     let matches = allRestResourceLines[i2].match(pattern);
-    //     if (matches) {
-    //         methodDeclarations.push(allRestResourceLines[i2]);
-    //     }
-    // }
-
-    // log.out(`methodDeclarations=${stringify(methodDeclarations, null, 2)}`);
-
-    // let requestInfoList = [];
-
-    // methodDeclarations.forEach(element => {
-    //     // pattern2: xxx();
-    //     let pattern2 = /\([ ]?\);/gm;
-    //     // pattern1: xxx(yyy zzz);
-    //     let pattern1 = /\(.*\);/gm;
-    //     let tokens = string.tokenize(element, /[\(\) ;]+/gm, null);
-
-    //     if (element.match(pattern2)) {
-    //         // pattern2: xxx();
-    //         let matches2 = element.match(pattern2);
-    //         // log.out(`matches2=${stringify(matches2, null, 2)}`);
-
-    //         let requestInfo = {
-    //             requestURL: null,
-    //             requestVariableName: null,
-    //             requestClassName: null,
-    //             requestMethodName: tokens[tokens.length - 1]
-    //         }
-    //         requestInfoList.push(requestInfo);
-
-
-    //     } else if (element.match(pattern1)) {
-    //         // pattern1: xxx(yyy zzz);
-    //         let matches1 = element.match(pattern1);
-    //         // log.out(`matches1=${stringify(matches1, null, 2)}`);
-
-    //         let requestInfo = {
-    //             requestURL: null,
-    //             requestVariableName: tokens[tokens.length - 1],
-    //             requestClassName: tokens[tokens.length - 2],
-    //             requestMethodName: tokens[tokens.length - 3]
-    //         }
-
-    //         requestInfoList.push(requestInfo);
-    //     }
-
-    // });
-
-
-    // // iterate requestInfoList
-    // for (let requestInfo of requestInfoList) {
-
-    //     if (requestInfo.requestClassName) {
-    //         // log.out(`requestInfo=${stringify(requestInfo, null, 2)}`);
-    //         let javaFileInfo = _getJavaFileInfo(`${requestInfo.requestClassName}.java`, switchyardProjectInfoFile);
-    //         // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}`);
-
-
-    //         if (javaFileInfo) {
-    //             let privateVariableList = _getPrivateVariableList(javaFileInfo);
-    //             // log.out(`javaFileInfo=${stringify(javaFileInfo, null, 2)}: privateVariableList=${stringify(privateVariableList, null, 2)}`);
-
-    //             requestInfo.requestBodyExample = {};
-    //             for (let privateVariable of privateVariableList) {
-    //                 requestInfo.requestBodyExample[privateVariable.name] = _resolveJavaVariableToJson(privateVariable.type, 10, switchyardProjectInfoFile);
-    //             }
-    //         } else {
-    //             // javaFileInfo===null means it might be a primitive type , such as List<string>
-    //             requestInfo.requestBodyExample = _resolveJavaVariableToJson(requestInfo.requestClassName, 10, switchyardProjectInfoFile);
-    //         }
-    //     }
-
-
-
-
-    //     // try to find the http method from requestMethodName
-    //     // example from:
-    //     //         @POST
-    //     //         ...
-    //     //         @Path("getSiteCodeSiteName")
-    //     //         ...
-    //     //         /public.*\(.*[ ]?(request|data)[ ]?\)/gm;
-    //     //
-    //     //  to:
-    //     //      requestInfo.requestURL = "POST /${contextPath}/getSiteCodeSiteName"
-    //     requestInfo.requestURL = _getRequestURL(contextPath, requestInfo.requestMethodName, sourceRestResourceFile);
-
-    // }
-
-    // log.out(`requestInfoList=${stringify(requestInfo, null, 2)}`);
+    // log.out(`requestExamples=${stringify(requestExamples, null, 2)}`);
     // log.breakpoint();
 
-    results = requestInfoList;
-
     // write results to project info file
-    file.write(outputFile, `${stringify(results, null, 2)}`);
+    file.write(outputFile, `${stringify(requestExamples, null, 2)}`);
 
     return `controllers.createRequestExample.js: created request examples at: ${outputFile}`;
 }
