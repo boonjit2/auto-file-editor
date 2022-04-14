@@ -29,11 +29,18 @@ example service:  {
  */
 function _getATECheckMessage(service) {
     let message = '';
-    if (!service.produce.toLowerCase().match(/json/gm)) {
-        message += `service.produce=${service.produce} is not JSON, `
+    // log.out(`service=${stringify(service, null, 2)}`);
+    // log.out(`typeof service.produce=${typeof service.produce}`);
+    if (typeof service.produce === 'string') {
+        if (!service.produce.toLowerCase().match(/json/gm)) { // not containing 'json'
+            message += `ATEError: service.produce=${service.produce} is not JSON, `
+        }
     }
-    if (!service.consume.toLowerCase().match(/json/gm)) {
-        message += `service.consume=${service.consume} is not JSON, `
+
+    if (typeof service.produce === 'string') {
+        if (!service.produce.toLowerCase().match(/json/gm)) { // not containing 'json'
+            message += `ATEError: service.consume=${service.consume} is not JSON, `
+        }
     }
 
     return message;
@@ -148,7 +155,9 @@ public class ${reference.projectInfoReference.className} {
 
             // repeating part for each service annotation
             for (let service of reference.interfaceInfo.serviceAnnotationInfoList) {
-                let serviceMethod = `// ${_getATECheckMessage(service)}
+                let serviceMethod = `
+    // ${_getATECheckMessage(service)}
+    // ATE: original produce= ${service.produce}
     public ${service.methodInfo.returnType} ${service.methodInfo.methodName}(${_parameterNameTypeToString(service.methodInfo.parameters)}) {
         Mono<${service.methodInfo.returnType}> result;
         result = webClient.${service.httpMethod.toLowerCase()}()
