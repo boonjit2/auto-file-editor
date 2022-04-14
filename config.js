@@ -12,11 +12,17 @@ module.exports =
             },
             {
                 "controller": "createSpringBootProject",
-                "description": "create Spring Boot project folder from template and switchyardProjectInfo to targetPath",
-                "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo.JSON",
-                "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-                "targetPath": "D:/auto-file-editor/logs/centralizedb",
-                "projectNameUppercase": "CentralizeDB"
+                "description": "create Spring Boot project folder from source to destination",
+                "source": {
+                    "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+                    "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+                    "projectName": "pre_pr"
+                },
+                "destination": {
+                    "mavenFilesLocationDir": "D:/myNetworkAppSpringBoot/planning/pre_pr",
+                    "rootPackageName": "th.co.ais.mynetwork.planning.pre_pr",
+                    "projectNameUppercase": "PrePR"
+                }
             },
             {
                 "controller": "createSpringBootRESTController",
