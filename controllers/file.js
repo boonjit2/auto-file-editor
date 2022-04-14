@@ -122,7 +122,7 @@ module.exports.readFileToArrayOfLines = function (FilePath) {
 }
 
 module.exports.copy = function (src, dest) {
-    // log.out(`copy from ${src} to ${dest}`);
+    log.out(`start copying from ${src} to ${dest}`);
     return fs.copySync(src, dest, { overwrite: true });
 }
 

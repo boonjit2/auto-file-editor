@@ -16,7 +16,7 @@ module.exports =
                 "source": {
                     "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
                     "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-                    "projectName": "pre_pr"
+                    "projectName": "pre_pr" // original project name that was specified in "package.*"
                 },
                 "destination": {
                     "mavenFilesLocationDir": "D:/myNetworkAppSpringBoot/planning/pre_pr",
@@ -56,10 +56,11 @@ module.exports =
             //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_centralizedb.JSON",
             //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_centralizedb.JSON"
             // }
-            // {
+            // , {
             //     "controller": "inspectTargetSwitchyardProject",
             //     "targetPath": "D:/myNetworkAppSwitchYard/alarmGateway",
-            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON"
+            //     "outputFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
+            //     "outputFileSwitchyardXmlFileInfo": "D:/auto-file-editor/logs/switchyardXmlFileInfo_alarmGateway.JSON"
             // }
             // {
             //     "controller": "inspectTargetSwitchyardProject",
@@ -77,20 +78,32 @@ module.exports =
             //
             // createSpringBootProject
             //
-            , { // pre_pr
-                "controller": "createSpringBootProject",
-                "source": {
-                    "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
-                    "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
-                    "projectName": "pre_pr"
-                },
-                "destination": {
-                    "mavenFilesLocationDir": "D:/myNetworkAppSpringBoot/planning/pre_pr",
-                    "rootPackageName": "th.co.ais.mynetwork.planning.pre_pr",
-                    "projectNameUppercase": "PrePR"
-                }
-
-            }
+            // , { // alarmgateway
+            //     "controller": "createSpringBootProject",
+            //     "source": {
+            //         "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_alarmGateway.JSON",
+            //         "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //         "projectName": "alarmgateway"
+            //     },
+            //     "destination": {
+            //         "mavenFilesLocationDir": "D:/myNetworkAppSpringBoot/alarmGateway",
+            //         "rootPackageName": "th.co.ais.mynetwork.alarmgateway",
+            //         "projectNameUppercase": "alarmGateway"
+            //     }
+            // }
+            // , { // pre_pr
+            //     "controller": "createSpringBootProject",
+            //     "source": {
+            //         "switchyardProjectInfoFile": "D:/auto-file-editor/logs/switchyardProjectInfo_pre_pr.JSON",
+            //         "springBootTemplateFolder": "D:/auto-file-editor/data/springboot_project_template",
+            //         "projectName": "pre_pr"
+            //     },
+            //     "destination": {
+            //         "mavenFilesLocationDir": "D:/myNetworkAppSpringBoot/planning/pre_pr",
+            //         "rootPackageName": "th.co.ais.mynetwork.planning.pre_pr",
+            //         "projectNameUppercase": "PrePR"
+            //     }
+            // }
             //
             //  createSpringBootRESTController
             // {

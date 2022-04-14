@@ -35,7 +35,13 @@ module.exports = function (source, destination) {
     let rootPackagePath = path.posix.join(mavenFilesLocationDir, '/src/main/java/', rootPackageName.replace(/\./gm, '/'));
     log.out(`rootPackagePath=${rootPackagePath}`);
     let projectSrcMainJavaPath = path.join(mavenFilesLocationDir, '/src/main/java/');
-    // log.out(`projectSrcMainJavaPath=${projectSrcMainJavaPath}`);
+    log.out(`projectSrcMainJavaPath=${projectSrcMainJavaPath}`);
+    let projectSrcMainResourcePath = path.join(mavenFilesLocationDir, '/src/main/resources/');
+    log.out(`projectSrcMainResourcePath=${projectSrcMainResourcePath}`);
+    let projectWebInfoPath = path.join(mavenFilesLocationDir, '/src/main/webapp/WEB-INF/');
+    log.out(`projectWebInfoPath=${projectWebInfoPath}`);
+
+
 
     // parse switchyard info
     let switchyardInfo = file.readFileToJson(switchyardProjectInfoFile);
@@ -150,91 +156,45 @@ module.exports = function (source, destination) {
 
     // copy over+ rename main controller file
     sourcePath = path.join(springBootTemplateFolder, '/main_controller/ProjectNameController.java').normalize();
-    destinationPath = path.join(rootPackagePath, '/', `${projectNameUppercase}Controller.java`);
+    destinationPath = path.join(rootPackagePath, '/controller/', `${projectNameUppercase}Controller.java`).normalize();
     file.copy(sourcePath, destinationPath);
 
     // edit main controller file
+    file.replaceInfile(
+        destinationPath
+        , /{{rootPackageName}}/gm,
+        rootPackageName);
 
+    file.replaceInfile(
+        destinationPath
+        , /{{sourceProjectName}}/gm,
+        sourceProjectName);
+
+    file.replaceInfile(
+        destinationPath
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
 
     // copy over resource files
+    sourcePath = path.join(springBootTemplateFolder, '/resources/').normalize();
+    destinationPath = projectSrcMainResourcePath;
+    file.copy(sourcePath, destinationPath);
 
+    // copy over jboss-web.xml
+    sourcePath = path.join(springBootTemplateFolder, '/WEB-INF/jboss-web.xml').normalize();
+    destinationPath = path.join(projectWebInfoPath, '/jboss-web.xml').normalize();
+    file.copy(sourcePath, destinationPath);
 
-    // copy over jboss files
-
-
-
-    log.breakpoint();
-
-    // let projectNameLowercase = projectNameUppercase.toLowerCase();
-    // let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
-
-    // error if targetPath not empty
-    // if (file.isPathEmpty(targetPath) === false) {
-    //     throw new Error(`targetPath ${targetPath} is not empty, please check and remove it before you continue`)
-    // }
-
-    // create empty directory
-    if (file.isPathExist(targetPath) === false) {
-        file.mkDir(targetPath);
-    }
-
-    // delete some essential folder in targetPath before continue
-    // let targetPathToCheck = path.join(targetPath, pathFragment1, projectNameLowercase);
-    // if (file.isPathExist(targetPathToCheck) === true) {
-    //     log.out(`found existing and removing dir: ${targetPathToCheck}`)
-    //     file.deleteDirRecursive(targetPathToCheck);
-    // }
-    // log.breakpoint();
-
-    // copy template to target location
-    file.copy(springBootTemplateFolder, targetPath)
-
-    // rename new project files
-    file.rename(path.join(targetPath, pathFragment1, 'project_name'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase));
-    file.rename(path.join(targetPath, pathFragment1, projectNameLowercase, '/controller/ProjectNameController.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/controller/', (projectNameUppercase + 'Controller.java')));
-    file.rename(path.join(targetPath, pathFragment1, projectNameLowercase, '/ProjectNameApplication.java'), path.join(targetPath, '/src/main/java/th/co/ais/mynetwork/', projectNameLowercase, '/', (projectNameUppercase + 'Application.java')));
-
-
-    // replace patterns in files
+    // edit jboss-web.xml
     file.replaceInfile(
-        path.join(targetPath, pathFragment1, projectNameLowercase, '/controller/*.java')
-        , /{{projectNameLowercase}}/gm,
-        projectNameLowercase);
+        destinationPath
+        , /{{contextPath}}/gm,
+        contextPath);
 
-    file.replaceInfile(
-        path.join(targetPath, pathFragment1, projectNameLowercase, '/controller/*.java')
-        , /{{projectNameUppercase}}/gm,
-        projectNameUppercase);
-
-    file.replaceInfile(
-        path.join(targetPath, pathFragment1, projectNameLowercase, '/*.java')
-        , /{{projectNameLowercase}}/gm,
-        projectNameLowercase);
-
-    file.replaceInfile(
-        path.join(targetPath, pathFragment1, projectNameLowercase, '/*.java')
-        , /{{projectNameUppercase}}/gm,
-        projectNameUppercase);
-
-    // // pom file
-    // file.replaceInfile(
-    //     path.join(targetPath, '/pom.xml')
-    //     , /{{projectNameLowercase}}/gm,
-    //     projectNameLowercase);
-
-    // file.replaceInfile(
-    //     path.join(targetPath, '/pom.xml')
-    //     , /{{projectNameUppercase}}/gm,
-    //     projectNameUppercase);
-
-    // let projectVersion = '1.0.0'
-    // file.replaceInfile(
-    //     path.join(targetPath, '/pom.xml')
-    //     , /{{projectVersion}}/gm,
-    //     projectVersion);
-
-
-
+    // copy over jboss-deployment-structure.xml
+    sourcePath = path.join(springBootTemplateFolder, '/WEB-INF/jboss-deployment-structure.xml').normalize();
+    destinationPath = path.join(projectWebInfoPath, '/jboss-deployment-structure.xml').normalize();
+    file.copy(sourcePath, destinationPath);
 
     return `controllers.createSpringBootProject.js: created project at: ${mavenFilesLocationDir}`;
 }
