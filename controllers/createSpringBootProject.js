@@ -17,20 +17,16 @@ function _extractJavaClassHeader(javaSourceFile) {
     return JavaClassHeader;
 }
 
-// TODO? don't need Slf4j anymore ?
-// function _applyLogAnnotation(targetPath) {
-//     let lines = file.readFileToArrayOfLines(targetPath);
-
-//     // find a line with pattern : import
-
-
-//     return;
-// }
-
 module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath, projectNameUppercase) {
 
-    let projectNameLowercase = projectNameUppercase.toLowerCase();
-    let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
+
+
+
+    // let projectNameLowercase = projectNameUppercase.toLowerCase();
+    // let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
+
+
+
 
     // error if targetPath not empty
     // if (file.isPathEmpty(targetPath) === false) {

@@ -6,6 +6,38 @@ const string = require('./stringu');
 const { resourceLimits } = require('worker_threads');
 const { match } = require('assert');
 
+/**
+example service:  {
+              "httpMethod": "POST",
+              "path": "/getCurrency",
+              "produce": "MediaType.APPLICATION_JSON",
+              "consume": "MediaType.APPLICATION_JSON",
+              "methodInfo": {
+                "modifiers": [
+                  "public"
+                ],
+                "returnType": "CurrencyMasterResponse",
+                "methodName": "getCurrency",
+                "parameters": [
+                  {
+                    "type": "CommonRequest",
+                    "name": "request"
+                  }
+                ]
+              }
+            }
+ */
+function _getATECheckMessage(service) {
+    let message = '';
+    if (!service.produce.toLowerCase().match(/json/gm)) {
+        message += `service.produce=${service.produce} is not JSON, `
+    }
+    if (!service.consume.toLowerCase().match(/json/gm)) {
+        message += `service.consume=${service.consume} is not JSON, `
+    }
+
+    return message;
+}
 
 /**
  * convert: http://${mynetwork.global.host.ip}:${mynetwork.global.host.port}/mynetwork/workflow/management
@@ -116,7 +148,7 @@ public class ${reference.projectInfoReference.className} {
 
             // repeating part for each service annotation
             for (let service of reference.interfaceInfo.serviceAnnotationInfoList) {
-                let serviceMethod = `
+                let serviceMethod = `// ${_getATECheckMessage(service)}
     public ${service.methodInfo.returnType} ${service.methodInfo.methodName}(${_parameterNameTypeToString(service.methodInfo.parameters)}) {
         Mono<${service.methodInfo.returnType}> result;
         result = webClient.${service.httpMethod.toLowerCase()}()
@@ -130,8 +162,6 @@ public class ${reference.projectInfoReference.className} {
                 filecontent += serviceMethod;
 
             }
-
-            // TODO: add check/commented text: "ATEError: this method is not producing JSON"
 
 
             // add footer
