@@ -15,10 +15,8 @@ for (let selected of config.job.selected) {
         result += inspectTargetSwitchyardProject(selected.targetPath, selected.outputFile, selected.outputFileSwitchyardXmlFileInfo);
     } else if (selected.controller === "createSpringBootProject") {
         result += createSpringBootProject(
-            selected.switchyardProjectInfoFile,
-            selected.springBootTemplateFolder,
-            selected.targetPath,
-            selected.projectNameUppercase);
+            selected.source,
+            selected.destination);
     } else if (selected.controller === "createRequestExample") {
         result += createRequestExample(
             selected.switchyardProjectInfoFile,

@@ -1,4 +1,4 @@
-package th.co.ais.mynetwork.{{projectNameLowercase}}.controller;
+package {{rootPackageName}}.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

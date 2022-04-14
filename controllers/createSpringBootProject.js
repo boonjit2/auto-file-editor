@@ -4,6 +4,8 @@ const stringify = require('json-stringify-safe');
 const path = require('path');
 const string = require('./stringu');
 const switchyard = require('./switchyard');
+const { kStringMaxLength } = require('buffer');
+const { strict } = require('assert');
 
 function _extractJavaClassHeader(javaSourceFile) {
     let JavaClassHeader = "";
@@ -17,16 +19,154 @@ function _extractJavaClassHeader(javaSourceFile) {
     return JavaClassHeader;
 }
 
-module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, targetPath, projectNameUppercase) {
+module.exports = function (source, destination) {
+
+    // parse
+    let switchyardProjectInfoFile = source.switchyardProjectInfoFile;
+    let springBootTemplateFolder = source.springBootTemplateFolder;
+    let sourceProjectName = source.projectName;
+
+    let mavenFilesLocationDir = destination.mavenFilesLocationDir;
+    let rootPackageName = destination.rootPackageName;
+    let projectNameUppercase = destination.projectNameUppercase;
+
+    // paths we need to know
+    let contextPath = null;
+    let rootPackagePath = path.posix.join(mavenFilesLocationDir, '/src/main/java/', rootPackageName.replace(/\./gm, '/'));
+    log.out(`rootPackagePath=${rootPackagePath}`);
+    let projectSrcMainJavaPath = path.join(mavenFilesLocationDir, '/src/main/java/');
+    // log.out(`projectSrcMainJavaPath=${projectSrcMainJavaPath}`);
+
+    // parse switchyard info
+    let switchyardInfo = file.readFileToJson(switchyardProjectInfoFile);
+
+    // create destination path to /src/main/java/
+    let pathPrefix = path.join(mavenFilesLocationDir, '/src/main/java/');
+
+    // delete old destination folder
+    let targetPathToCheck = mavenFilesLocationDir;
+    if (file.isPathExist(targetPathToCheck) === true) {
+        log.out(`found existing and removing dir: ${targetPathToCheck}`)
+        file.deleteDirRecursive(targetPathToCheck);
+    }
+
+    // iterate switchyardInfo file list and process each file
+    // copy those files over to new location
+    for (let member of switchyardInfo) {
+        // handle java files
+        if (member.isJavaSource) {
+            let sourcePath = member.fullPath;
+            let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
+            file.copy(sourcePath, destinationPath);
+
+        }
+
+        // get switchyard contextPath and put it into \springboot_project_template\src\main\webapp\WEB-INF\jboss-web.xml
+        if (member.fileName === 'switchyard.xml') {
+            let switchyardLines = file.readFileToArrayOfLines(member.fullPath);
+            // log.out(`switchyardLines=${stringify(switchyardLines, null, 2)}`);
+            contextPath = string.extractXmlValue(switchyardLines, /<resteasy:contextPath>.*<\/resteasy:contextPath>/gm, '<resteasy:contextPath>', '</resteasy:contextPath>');
+            if (contextPath === null) {
+                throw new Error(`Unable to find contextPath from ${member.fullPath}`);
+            }
+            contextPath = path.posix.join('/', contextPath); // original context path has no / at the beginning
+
+            // replace contextPath in the template file
+            // let pathFragment2 = '/src/main/webapp/WEB-INF'
+            // file.replaceInfile(
+            //     path.join(targetPath, pathFragment2, '/jboss-web.xml')
+            //     , /{{contextPath}}/gm,
+            //     contextPath);
+
+        }
+
+    }
+
+    // copy over maven files
+    let sourcePath = path.join(springBootTemplateFolder, '/maven_files/').normalize();
+    let destinationPath = mavenFilesLocationDir;
+    file.copy(sourcePath, destinationPath);
+
+    // edit pom file
+    // pom file
+    file.replaceInfile(
+        path.join(destinationPath, '/pom.xml')
+        , /{{sourceProjectName}}/gm,
+        sourceProjectName);
+
+    file.replaceInfile(
+        path.join(destinationPath, '/pom.xml')
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+    let projectVersion = '1.0.0'
+    file.replaceInfile(
+        path.join(destinationPath, '/pom.xml')
+        , /{{projectVersion}}/gm,
+        projectVersion);
+
+    // copy over+rename ProjectNameApplication.java file
+    sourcePath = path.join(springBootTemplateFolder, '/src_main_java_root/ProjectNameApplication.java').normalize();
+    destinationPath = path.join(rootPackagePath, '/', `${projectNameUppercase}Application.java`).normalize();
+    file.copy(sourcePath, destinationPath);
+
+    // edit ProjectNameApplication.java
+    file.replaceInfile(
+        destinationPath
+        , /{{rootPackageName}}/gm,
+        rootPackageName);
+
+    file.replaceInfile(
+        destinationPath
+        , /{{sourceProjectName}}/gm,
+        sourceProjectName);
+
+    file.replaceInfile(
+        destinationPath
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+    // copy over+rename ServletInitializer file
+    sourcePath = path.join(springBootTemplateFolder, '/src_main_java_root/ServletInitializer.java').normalize();
+    destinationPath = path.join(rootPackagePath, '/', `ServletInitializer.java`).normalize();
+    file.copy(sourcePath, destinationPath);
+
+    // edit ServletInitializer file
+    file.replaceInfile(
+        destinationPath
+        , /{{rootPackageName}}/gm,
+        rootPackageName);
+
+    file.replaceInfile(
+        destinationPath
+        , /{{sourceProjectName}}/gm,
+        sourceProjectName);
+
+    file.replaceInfile(
+        destinationPath
+        , /{{projectNameUppercase}}/gm,
+        projectNameUppercase);
+
+
+    // copy over+ rename main controller file
+    sourcePath = path.join(springBootTemplateFolder, '/main_controller/ProjectNameController.java').normalize();
+    destinationPath = path.join(rootPackagePath, '/', `${projectNameUppercase}Controller.java`);
+    file.copy(sourcePath, destinationPath);
+
+    // edit main controller file
+
+
+    // copy over resource files
+
+
+    // copy over jboss files
 
 
 
+    log.breakpoint();
 
     // let projectNameLowercase = projectNameUppercase.toLowerCase();
     // let pathFragment1 = '/src/main/java/th/co/ais/mynetwork/';
-
-
-
 
     // error if targetPath not empty
     // if (file.isPathEmpty(targetPath) === false) {
@@ -39,11 +179,11 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
     }
 
     // delete some essential folder in targetPath before continue
-    let targetPathToCheck = path.join(targetPath, pathFragment1, projectNameLowercase);
-    if (file.isPathExist(targetPathToCheck) === true) {
-        log.out(`found existing and removing dir: ${targetPathToCheck}`)
-        file.deleteDirRecursive(targetPathToCheck);
-    }
+    // let targetPathToCheck = path.join(targetPath, pathFragment1, projectNameLowercase);
+    // if (file.isPathExist(targetPathToCheck) === true) {
+    //     log.out(`found existing and removing dir: ${targetPathToCheck}`)
+    //     file.deleteDirRecursive(targetPathToCheck);
+    // }
     // log.breakpoint();
 
     // copy template to target location
@@ -76,87 +216,25 @@ module.exports = function (switchyardProjectInfoFile, springBootTemplateFolder, 
         , /{{projectNameUppercase}}/gm,
         projectNameUppercase);
 
-    // pom file
-    file.replaceInfile(
-        path.join(targetPath, '/pom.xml')
-        , /{{projectNameLowercase}}/gm,
-        projectNameLowercase);
+    // // pom file
+    // file.replaceInfile(
+    //     path.join(targetPath, '/pom.xml')
+    //     , /{{projectNameLowercase}}/gm,
+    //     projectNameLowercase);
 
-    file.replaceInfile(
-        path.join(targetPath, '/pom.xml')
-        , /{{projectNameUppercase}}/gm,
-        projectNameUppercase);
+    // file.replaceInfile(
+    //     path.join(targetPath, '/pom.xml')
+    //     , /{{projectNameUppercase}}/gm,
+    //     projectNameUppercase);
 
-    let projectVersion = '1.0.0'
-    file.replaceInfile(
-        path.join(targetPath, '/pom.xml')
-        , /{{projectVersion}}/gm,
-        projectVersion);
-
-    // parse switchyard info
-    let switchyardRaw = file.readFile(switchyardProjectInfoFile);
-    let switchyardInfo = JSON.parse(switchyardRaw);
-
-    // create destination path
-    let pathPrefix = path.join(targetPath, '/src/main/java/');
-
-    // iterate switchyardInfo file list and process each file
-    for (let member of switchyardInfo) {
-        // handle java files
-        if (member.isJavaSource) {
-            let sourcePath = member.fullPath;
-            let destinationPath = path.join(pathPrefix, member.packagePath, member.fileName);
-            file.copy(sourcePath, destinationPath);
-
-            // // check if this file has loggers
-            // if (file.containPattern(destinationPath, /import[ ]*org.apache.log4j.Logger;/gm)) {
-            //     // apply new log import
-            //     file.replaceInfile(
-            //         destinationPath
-            //         , /import[ ]*org.apache.log4j.Logger;/gm,
-            //         'import lombok.extern.slf4j.Slf4j;');
-
-            //     // replace old LOGGER. with log.
-            //     file.replaceInfile(
-            //         destinationPath
-            //         , /LOGGER\./gm,
-            //         'log.');
-
-            //     // Note: don't need Slf4j anymore ? apply @Slf4j annotation before the header of the class
-            //     // _applyLogAnnotation(destinationPath);
-            // }
-
-        }
-
-        // handle pom files
-        // Note: no need to automate dependencies yet, this job can
-        // still be manually doable
-        // if (member.fileName === 'pom.xml') {
-        // }
+    // let projectVersion = '1.0.0'
+    // file.replaceInfile(
+    //     path.join(targetPath, '/pom.xml')
+    //     , /{{projectVersion}}/gm,
+    //     projectVersion);
 
 
 
-        // get switchyard contextPath and put it into \springboot_project_template\src\main\webapp\WEB-INF\jboss-web.xml
-        if (member.fileName === 'switchyard.xml') {
-            let switchyardLines = file.readFileToArrayOfLines(member.fullPath);
-            // log.out(`switchyardLines=${stringify(switchyardLines, null, 2)}`);
-            let contextPath = string.extractXmlValue(switchyardLines, /<resteasy:contextPath>.*<\/resteasy:contextPath>/gm, '<resteasy:contextPath>', '</resteasy:contextPath>');
-            if (contextPath === null) {
-                throw new Error(`Unable to find contextPath from ${member.fullPath}`);
-            }
-            contextPath = path.posix.join('/', contextPath); // original context path has no / at the beginning
 
-            // replace contextPath in the template file
-            let pathFragment2 = '/src/main/webapp/WEB-INF'
-            file.replaceInfile(
-                path.join(targetPath, pathFragment2, '/jboss-web.xml')
-                , /{{contextPath}}/gm,
-                contextPath);
-
-        }
-
-    }
-
-
-    return `controllers.createSpringBootProject.js: created project at: ${targetPath}`;
+    return `controllers.createSpringBootProject.js: created project at: ${mavenFilesLocationDir}`;
 }

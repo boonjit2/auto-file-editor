@@ -1,4 +1,4 @@
-package th.co.ais.mynetwork.{{projectNameLowercase}};
+package {{rootPackageName}}.{{sourceProjectName}};
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
