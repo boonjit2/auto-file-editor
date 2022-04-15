@@ -24,9 +24,8 @@ for (let selected of config.job.selected) {
             selected.outputFile);
     } else if (selected.controller === "createSpringBootRESTController") {
         result += createSpringBootRESTController(
-            selected.switchyardInterfaceDeclarationFile,
-            selected.switchyardInterfaceImplementationFile,
-            selected.outputFile);
+            selected.source,
+            selected.destination);
     } else if (selected.controller === "createSpringBootExternalService") {
         result += createSpringBootExternalService(
             selected.switchyardXmlInfoFile,

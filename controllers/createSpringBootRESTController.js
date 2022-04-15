@@ -20,7 +20,22 @@ function _addRequestBodyAnnotation(parameters) {
 
 
 
-module.exports = function (switchyardInterfaceDeclarationFile, switchyardInterfaceImplementationFile, outputFile) {
+module.exports = function (source, destination) {
+    //  input example:
+    //      "source": {
+    //         "interfaceDeclarationFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRestResource.java",
+    //         "interfaceImplementationFile": "D:/myNetworkAppSwitchYard/planning/pre-pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/PrePRRoute.java",
+    //     },
+    //     "destination": {
+    //         "packageName": "th.co.ais.mynetwork.planning.pre_pr.controller",
+    //         "fullPath": "D:/myNetworkAppSpringBoot/planning/pre_pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/controller/PrePRController.java",
+    //     }
+
+    //parse
+    let switchyardInterfaceDeclarationFile = source.interfaceDeclarationFile;
+    let switchyardInterfaceImplementationFile = source.interfaceImplementationFile;
+    let outputFile = destination.fullPath;
+    let packageName = destination.packageName;
 
     // calculate controller name
     //          xxxController.java
@@ -28,12 +43,8 @@ module.exports = function (switchyardInterfaceDeclarationFile, switchyardInterfa
     //          ["xxx" ,"Controller.java"]
     let controllerNameUpperCase = subs[0];
 
-
-    let controllerNameLowerCase = controllerNameUpperCase.toLowerCase();
-
-
     let text = '';
-    text += `package th.co.ais.mynetwork.${controllerNameLowerCase}.controller;\n`;
+    text += `package ${packageName};\n`;
     text += `
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -63,11 +74,11 @@ public class ${controllerNameUpperCase}Controller {
     //    }
     private static final Logger LOGGER = Logger.getLogger(${controllerNameUpperCase}Controller.class);
 
-        @PostMapping(path = "/hello", produces = "application/json")
-        public String hello() {
-            // LOGGER.info("hello"+request);
-            return "hello";
-        }
+    @PostMapping(path = "/hello", produces = "application/json")
+    public String hello() {
+        // LOGGER.info("hello"+request);
+        return "hello";
+     }
 `
 
     // Add a constructor codes
@@ -141,17 +152,25 @@ public class ${controllerNameUpperCase}Controller {
     // log.out(`switchyardServiceInfoList=${stringify(switchyardServiceInfoList, null, 2)}`);
 
     // add each .implementLines to text
+
     for (let serviceInfo of switchyardServiceInfoList) {
+        // method header
+        text += `\n`
         for (let line of serviceInfo.methodInfo.implementLines) {
             text += `${line}\n`;
         }
+
+
     }
+
 
 
     // class footer
     text += `\n}`
 
+
     file.write(outputFile, text);
+
     log.out(`${logLine}`);
     log.out(`switchyardServiceInfoList.length=${switchyardServiceInfoList.length}`);
 
