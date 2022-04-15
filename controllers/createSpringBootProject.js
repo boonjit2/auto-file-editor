@@ -155,25 +155,25 @@ module.exports = function (source, destination) {
 
 
     // copy over+ rename main controller file
-    sourcePath = path.join(springBootTemplateFolder, '/main_controller/ProjectNameController.java').normalize();
-    destinationPath = path.join(rootPackagePath, '/controller/', `${projectNameUppercase}Controller.java`).normalize();
-    file.copy(sourcePath, destinationPath);
+    // sourcePath = path.join(springBootTemplateFolder, '/main_controller/ProjectNameController.java').normalize();
+    // destinationPath = path.join(rootPackagePath, '/controller/', `${projectNameUppercase}Controller.java`).normalize();
+    // file.copy(sourcePath, destinationPath);
 
-    // edit main controller file
-    file.replaceInfile(
-        destinationPath
-        , /{{rootPackageName}}/gm,
-        rootPackageName);
+    // // edit main controller file
+    // file.replaceInfile(
+    //     destinationPath
+    //     , /{{rootPackageName}}/gm,
+    //     rootPackageName);
 
-    file.replaceInfile(
-        destinationPath
-        , /{{sourceProjectName}}/gm,
-        sourceProjectName);
+    // file.replaceInfile(
+    //     destinationPath
+    //     , /{{sourceProjectName}}/gm,
+    //     sourceProjectName);
 
-    file.replaceInfile(
-        destinationPath
-        , /{{projectNameUppercase}}/gm,
-        projectNameUppercase);
+    // file.replaceInfile(
+    //     destinationPath
+    //     , /{{projectNameUppercase}}/gm,
+    //     projectNameUppercase);
 
     // copy over resource files
     sourcePath = path.join(springBootTemplateFolder, '/resources/').normalize();

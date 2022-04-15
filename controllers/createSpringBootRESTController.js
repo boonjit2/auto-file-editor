@@ -19,7 +19,21 @@ function _addRequestBodyAnnotation(parameters) {
 }
 
 
+function _getImportLines(pattern, switchyardInterfaceImplementationFile) {
+    let importLine = ``;
+    let switchyardInterfaceImplementationLines = file.readFileToArrayOfLines(switchyardInterfaceImplementationFile);
+    for (let line of switchyardInterfaceImplementationLines) {
+        let matches = line.match(pattern);
+        if (matches) {
+            importLine += `${matches[0]}\n`
+        }
+    }
 
+    return importLine;
+}
+
+
+// main export
 module.exports = function (source, destination) {
     //  input example:
     //      "source": {
@@ -43,6 +57,10 @@ module.exports = function (source, destination) {
     //          ["xxx" ,"Controller.java"]
     let controllerNameUpperCase = subs[0];
 
+    // gather original (internal only) imports
+    let sourceImportLine = _getImportLines(/[ ]*import[ ]+.*;/gm, switchyardInterfaceImplementationFile);
+
+
     let text = '';
     text += `package ${packageName};\n`;
     text += `
@@ -60,6 +78,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
+
+// ATE: original imports
+${sourceImportLine}
+
 
 @RestController
 //@RequestMapping(path="/")

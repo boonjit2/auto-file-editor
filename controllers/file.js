@@ -37,15 +37,13 @@ module.exports.readXmlFiletoJsonObj = function (filePath) {
 // }
 
 module.exports.write = function (targetPath, data) {
+
+    // create destination dir if not exists
+    let targetDir = path.dirname(targetPath);
+    fs.ensureDirSync(targetDir);
+
     fs.writeFileSync(targetPath, data, 'utf8');
-    // , function (err) ;
-    // {
-    //     if (err) {
-    //         console.log("file.write: Error:");
-    //         return console.log(err);
-    //     }
-    //     console.log(`file.write: Done: Wrote to file: ${targetPath}`);
-    // });
+
     console.log(`file.write: Done: Wrote to file: ${targetPath}`);
 }
 
