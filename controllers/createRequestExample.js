@@ -207,9 +207,6 @@ function _getPrivateVariableList(javaFileInfo) {
             }
             if (token.match(/;/gm)) {
                 endIndex = tokens.indexOf(token);
-
-                // remove ';' from token
-                token = token.replace(/;/gm, '');
                 break;
             }
         }
@@ -218,13 +215,14 @@ function _getPrivateVariableList(javaFileInfo) {
             throw new Error(`unable to find an endIndex of tokens=${stringify(tokens)}`);
         }
 
-        let name = tokens[endIndex].trim();
+        // remove ';' from name if found
+        let name = tokens[endIndex].replace(/;/gm, '').trim();
         let type = tokens[endIndex - 1].trim();
         privateVariables.push({ name, type });
     }
 
 
-
+    // log.out(`_getPrivateVariableList:privateVariables=${stringify(privateVariables, null, 2)}`);
     return privateVariables;
 }
 
