@@ -1,18 +1,26 @@
 # auto-file-editor
-Edit the file automatically
+* Edit the file automatically
 
-# update dependencies, fix issues
+# Requirements
+* [Nodejs](https://nodejs.dev/)
+* *Optional* [VSCode](https://code.visualstudio.com/)
+
+# Update dependencies
+```
 npm install
-npm audit fix
+```
 
-# config
-edit config.js :
+# Config
+* edit config.js :
 copy the job examples from "available" array.
 put the job you want to run into "selected" array.
 
-# execute the program
+# Execute the program
+```
 npm start
+```
 
-# output
-By default is in /logs
-And in the output path specified in your config.js
+# Outputs
+* By default it is in /logs
+* Also specified in your config.js
+
