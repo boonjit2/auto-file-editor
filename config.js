@@ -25,6 +25,7 @@ module.exports =
                 }
             },
             , { // pre_pr
+                // NOTE: recommended name : XxxSpringBootController so it won't overwrite old ones
                 "controller": "createSpringBootRESTController",
                 "description": "create Spring Boot REST controller using data from Switchyard controller files, also list its services into logs",
                 "source": {
@@ -33,7 +34,7 @@ module.exports =
                 },
                 "destination": {
                     "packageName": "th.co.ais.mynetwork.planning.pre_pr.controller",
-                    "fullPath": "D:/myNetworkAppSpringBoot/planning/pre_pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/controller/PrePRController.java",
+                    "fullPath": "D:/myNetworkAppSpringBoot/planning/pre_pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/controller/PrePRSpringBootController.java",
                 }
             },
             {
@@ -119,7 +120,7 @@ module.exports =
                 },
                 "destination": {
                     "packageName": "th.co.ais.mynetwork.planning.pre_pr.controller",
-                    "fullPath": "D:/myNetworkAppSpringBoot/planning/pre_pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/controller/PrePRController.java",
+                    "fullPath": "D:/myNetworkAppSpringBoot/planning/pre_pr/src/main/java/th/co/ais/mynetwork/planning/pre_pr/controller/PrePRSpringBootController.java",
                 }
             }
             //
