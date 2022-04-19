@@ -184,28 +184,32 @@ function _getPrivateVariableList(javaFileInfo) {
         let tokens = string.tokenize(privateVariableLine, /[\(\) ]+/gm, { removeEmptyMembers: true });
         // log.out(`tokens=${stringify(tokens, null, 2)}`);
 
-        // if (tokens.length === 3) {
-        //     let name = tokens[tokens.length - 1].trim();
-        //     let type = tokens[tokens.length - 2].trim();
-        //     privateVariables.push({ name, type });
-        // } else {
-        //     throw new Error(`Unable to parse tokens=${stringify(tokens)}`);
-        // }
         //                          V endIndex    V
         // format: [modifiers] Type [variableName];(End)
         //
-        //                          V endIndex     V
-        // format: [modifiers] Type [variableName] = [value or whatever.*];(End)
+        //                          V endIndex            V
+        // format: [modifiers] Type [variableName](spaces);(End)
+        //
+        //                          V endIndex            V
+        // format: [modifiers] Type [variableName](spaces)= [value or whatever.*];(End)
+        //
+        //                          V endIndex    V
+        // format: [modifiers] Type [variableName]= [value or whatever.*];(End)
         //
         // Find the ending ("=" or last index of the array which contains ';')
         // if we can't find it , throw error
         let endIndex = -1;
         for (let token of tokens) {
-            if (token.match(/=/gm)) {
+            if (token === '=') {
                 endIndex = tokens.indexOf(token) - 1;
                 break;
-            }
-            if (token.match(/;/gm)) {
+            } else if (token === ';') {
+                endIndex = tokens.indexOf(token) - 1;
+                break;
+            } else if (token.match(/.*=/gm)) {
+                endIndex = tokens.indexOf(token);
+                break;
+            } else if (token.match(/.*;/gm)) {
                 endIndex = tokens.indexOf(token);
                 break;
             }
@@ -216,7 +220,7 @@ function _getPrivateVariableList(javaFileInfo) {
         }
 
         // remove ';' from name if found
-        let name = tokens[endIndex].replace(/;/gm, '').trim();
+        let name = tokens[endIndex].replace(/[;=]/gm, '').trim();
         let type = tokens[endIndex - 1].trim();
         privateVariables.push({ name, type });
     }
@@ -262,11 +266,13 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         // log.out(`case:3,result=${result}`);
         return result;
     } else if (type.toLowerCase() === "string") {
-        let result = "String";
+        // let result = "String";
+        let result = "";
         // log.out(`case:4,result=${result}`);
         return result;
     } else if (type.toLowerCase() === "timestamp") {
-        let result = "Timestamp";
+        // let result = "Timestamp";
+        let result = "";
         // log.out(`case:8,result=${result}`);
         return result;
     } else {
