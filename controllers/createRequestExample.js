@@ -272,7 +272,7 @@ function _resolveJavaVariableToJson(type, depthLimit, switchyardProjectInfoFile)
         return result;
     } else if (type.toLowerCase() === "timestamp") {
         // let result = "Timestamp";
-        let result = "";
+        let result = null;
         // log.out(`case:8,result=${result}`);
         return result;
     } else {
